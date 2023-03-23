@@ -1,0 +1,112 @@
+type Person = {
+  age: number;
+  name: string;
+};
+
+
+interface Person {
+    age: number;
+    name: string;
+  }
+
+  When using an arrow function expression, you can implicitly return values by wrapping the 
+  object literal in parentheses:
+
+export function getNumbers(names: string[]) {
+  return names.map(name => ({[name]: parseInt(name)}));
+}
+
+Fixed Code ✔️
+You cannot reference a file to itself (causes recursive loop). To fix the problem you have to 
+update the reference path to point to another declaration file:
+
+index.d.ts
+/// <reference path='some-other-file.d.ts' />
+
+export function getName(firstName: string, lastName: string = 'Doe'): string {
+    return `${firstName} ${lastName}`;
+  }
+
+  The easiest way to fix the error is to make age optional as well:
+
+function createUser(firstName: string, lastName: string, middleName?: string, age?: number) {
+  // ...
+}
+
+They keywords public, private, and protected define the access to a class member. Access modifiers 
+have to be defined first in TypeScript.
+
+Solution 1:
+
+abstract class Animal {
+  public abstract makeNoise(): string;
+}
+
+
+With declare global an ambient context is created. TypeScript does not allow statements in such ambient context declaration which is why we have to change the statement into a declaration:
+
+declare global {
+  function client(): APIClient;
+}
+If you don’t want client to be a function, you have to use thevar` keyword:
+
+declare global {
+  var client: APIClient;
+}
+
+
+If you want to export a constant from a definition file (d.ts), then you have to use the export modifier:
+
+index.d.ts
+export const MAGIC_NUMBER = 1337;
+
+
+Fixed Code ✔️
+export const sendRequestWithCookie = (
+  client: HttpClient,
+  config: AxiosRequestConfig,
+  engine: CRUDEngine
+): AxiosPromise => {
+  return loadExistingCookie(engine).then((cookie: Cookie) => {
+    if (!cookie.isExpired) {
+      config.headers = config.headers || {};
+      config.headers['Cookie'] = `zuid=${cookie.zuid}`;
+      config.withCredentials = true;
+    }
+
+    return client._sendRequest(config);
+  });
+};
+
+
+Fixed Code ✔️
+If your function is asynchronous, your return value must be wrapped with Promise<...>:
+
+async function myFunction(): Promise<string> {
+  return 'test';
+}
+
+A.hasOne(B, { /* options */ });
+A.belongsTo(B, { /* options */ });
+A.hasMany(B, { /* options */ });
+A.belongsToMany(B, { through: 'C', /* options */ });
+The order in which the association is defined is relevant. In other words, the order matters,
+ for the four cases. In all examples above, A is called the source model and B is 
+called the target model. This terminology is important.
+
+The A.hasOne(B) association means that a One-To-One relationship exists between A and B, with
+ the foreign key being defined in the target model (B).
+
+The A.belongsTo(B) association means that a One-To-One relationship exists between A and B, 
+with the foreign key being defined in the source model (A).
+
+The A.hasMany(B) association means that a One-To-Many relationship exists between A and B, with 
+the foreign key being defined in the target model (B).
+
+These three calls will cause Sequelize to automatically add foreign keys to the appropriate
+ models (unless they are already present).
+
+ The A.belongsToMany(B, { through: 'C' }) association means that a Many-To-Many relationship 
+ exists between A and B, using table C as junction table, which will have the foreign keys 
+ (aId and bId, for example). Sequelize will automatically create this model C (unless it already exists)
+  and define the appropriate foreign keys on it
