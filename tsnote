@@ -110,3 +110,5 @@ These three calls will cause Sequelize to automatically add foreign keys to the 
  exists between A and B, using table C as junction table, which will have the foreign keys 
  (aId and bId, for example). Sequelize will automatically create this model C (unless it already exists)
   and define the appropriate foreign keys on it
+
+  

@@ -3,6 +3,7 @@ import { configVar } from '../../Lib/Config/keys/Key';
 import { studentObject } from '../../Models/Mongo/Student';
 import { sessionObject } from '../../Models/Mongo/Session';
 import { LogEvents } from '../../Lib/Event/Event';
+import {User} from '../../Models/Mongo/Users';
 const uri: string = <string> configVar().MONGO_URI
 //console.log( configVar().MAIL_URL)
 
@@ -54,8 +55,9 @@ export const MongoDB  = async()=>{
     const connection = await MongooseConnection.getInstance();
     const db = await connection.getConnection();
     const tablesObj:any = { tables:  {
-           users: db.model('user',new mongoose.Schema(studentObject),'user'),
-          session:db.model('session',new mongoose.Schema(sessionObject),'session'),
+           user: db.model('user',new mongoose.Schema(studentObject, { 'timestamps': true }),'user'),
+           session:db.model('session',new mongoose.Schema(sessionObject),'session'),
+           users:db.model('users', new mongoose.Schema(User) )
     }      
     }
     return tablesObj
