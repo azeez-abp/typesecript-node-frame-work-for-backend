@@ -137,7 +137,25 @@ app.use(body_parser.text())
 app.use(cors(corsOptionsDelegate));
 //app.use(cookie_parser());
 
-app.use(passport.initialize());
+// app.use(function(request:any, response:any, next:any) {
+//   if(request.session  ){
+//     console.log(request.cookie, 'rtyui',request.session)
+//   }
+
+//   console.log(request.headers.authorization)
+//   if (request.session && !request.session.regenerate) {
+//       request.session.regenerate = (cb:Function) => {
+//           cb()
+//       }
+//   }
+//   if (request.session && !request.session.save) {
+//       request.session.save = (cb:Function) => {
+//           cb()
+//       }
+//   }
+//   next()
+// })
+app.use(passport.initialize() );
 app.use(Session.session())///use your define session
 app.use(express.static(path.join(__dirname,'/public')))
 //app.use(passport.session());
@@ -146,7 +164,7 @@ app.use(express.static(path.join(__dirname,'/public')))
 
 app.use((req:any,res:any,next:any)=>{
 //  let s  = new   SessionWorker() 
- //console.log(req.user_details)
+ //console.log(req.session)
  //res.send(req.user_details)
 // s.createMongo(req.session.id,req.session.id,req.session.cookie,random(12))
     ///work for browse loading

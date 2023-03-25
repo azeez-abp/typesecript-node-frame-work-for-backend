@@ -1,12 +1,19 @@
 import { UserRegister } from "../Controllers/User/Register"
+import { SessionWorker } from "../Lib/SessionWorker/Session"
 import { MongoAuth } from "../Middlewares/Auth/AuthMongo"
 import { PassportAuthWithJsonChecker } from "../Middlewares/PassportAuthWithJwtStrategyAuthChecker"
 //import * as passport from 'passport'
 const passport  = require('passport')
 
 let UserRoute= (app:any)=>{
-PassportAuthWithJsonChecker.MongoPassportAutheChecker('users')
+  //PassportAuthWithJsonChecker.MongoPassportAutheChecker('users')  
+app.use((req:any,res:any,next:any)=>{
+PassportAuthWithJsonChecker.MongoPassportAutheChecker('users',req,res)  
+next()
+})
+
  app.get('/',(req:any,res:any)=>{
+
    const d:any ={done:req.session}
    res.json(d)
  })
@@ -17,9 +24,13 @@ PassportAuthWithJsonChecker.MongoPassportAutheChecker('users')
    
   })
 
-  app.post('/api/v1/user/profile',passport.authenticate('jwt', { session: false }) ,(req:any,res:any)=>{
-      
-    return res.status(200).json({suc:req.user})
+  app.post('/api/v1/user/profile', 
+     SessionWorker.checksessionMongo,
+     passport.authenticate('jwt', { session: false }) ,
+  (req:any,res:any)=>{
+    console.log( req.isAuthenticated())
+   //  console.log(req.session,req.user_details) 
+    return res.status(200).json({suc:req.user,"aze":req.azeez})
    })
 
   app.post('/api/v1/user/register',async(req:any,res:any)=>{

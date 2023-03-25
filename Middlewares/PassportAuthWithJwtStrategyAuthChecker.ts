@@ -6,15 +6,13 @@ import { MongoDB as MongooseConnection } from '../Database/Mongo/Mongo';
 import MysqlDB from '../Database/Mysql/SequenlizeDB';
 import { KeyValueReplacer } from '../Resources/genearator';
 import { userResouece } from '../Resources/User/Resources';
+import { SessionWorker } from '../Lib/SessionWorker/Session';
 
 const keys_:any  = keys.configVar()
 const passport = require('passport')
 
-opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
 
-opts.secretOrKey = keys_.ACCESS_TOKEN;
-opts.ignoreExpiration  = false
- opts.passReqToCallback =false
+
  /*option affect the functionality of jwt*/
 // opts.issuer  = 'abp'
 // opts.audience = 'user id'
@@ -36,12 +34,37 @@ opts.ignoreExpiration  = false
 
  //
 /// require this on the page where you call passport.authenticate   
-const MongoPassportAutheChecker:Function   =  (tableNamme:string)=>{
-          
+const MongoPassportAutheChecker:Function   = async (tableName:string,req:any,res:any)=>{
+
+   
+      // let authValue   = req.headers.authorization  || req.headers.Authorization
+    
+      // if(!authValue) return res.sendStatus(401)
+      // let token = authValue.split(" ")[1];
+
+      // let s_   =  new  SessionWorker()
+      //  let check_session:any =  await s_.checksessionMongo(token)
+      //  if(check_session. has_regenerate){
+      //    if( req.headers.authorization ){
+      //     req.headers.authorization  = "Bearer "+check_session.has_regenerate
+      //    } else{
+      //     req.headers.Authorization  = "Bearer "+check_session.has_regenerate
+      //    }  
+      //  }
+
+      // if(check_session.logout){
+      //   res.status(401).send({err:"Unauthorized"})
+      // } 
+
+      opts.secretOrKey = keys_.ACCESS_TOKEN;
+      opts.ignoreExpiration  = false
+      opts.passReqToCallback =false      
+      opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
+      
+    // console.log(req.headers.authorization)
        return  passport.use(new PassportStrategy(opts, async(jwt_payload:any, done:any) =>{
-           let db:any =   await MongooseConnection()
-          
-            db.tables[tableNamme].findOne(
+        let db:any =   await MongooseConnection()
+            await db.tables[tableName].findOne(
             {
                 where:{userId:jwt_payload.user}
             },
@@ -52,25 +75,33 @@ const MongoPassportAutheChecker:Function   =  (tableNamme:string)=>{
          { pa: 0, salt: 0,_id:0 }).select({ fn: "Firstname" }).exec( function(err:any, user:any
              ) {
                  if (err) {
+               
                      return done(err, false);
                  }
                  if (user) {
                   //  return done(null, user ) ;
                      return done(null, KeyValueReplacer.replace( [user], userResouece ) ) ;
                  } else {
+              
                      return done(null, false);
                      // or you could create a new account
                  }
              });
 
+         
+
         }))
+
+
+        
+        
 }
  
 
-const jsw_passport_auth_mysql_chekcer    = (tableNamme:string)=>{
+const jsw_passport_auth_mysql_chekcer    = (tableName:string)=>{
        const getUser:Function  =async (payload:any,done:any)=>{
       try {
-        const user:any  =   await MysqlDB.getInstance().table(tableNamme).findOne({
+        const user:any  =   await MysqlDB.getInstance().table(tableName).findOne({
             where:{
                 userId:payload.user
               }

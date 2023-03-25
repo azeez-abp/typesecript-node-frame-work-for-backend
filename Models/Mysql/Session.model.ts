@@ -14,6 +14,7 @@ const SessionSchma:ModelAttributes  =  {
   session_id:{type:DataTypes.STRING(120),unique:true,primaryKey: true },
   cookie_id:{type:DataTypes.STRING(120),unique:true},
   cookie:{type:DataTypes.TEXT},
+  table:{type:DataTypes.STRING(120)}
 }
 
 const userTableConnector : InitOptions ={

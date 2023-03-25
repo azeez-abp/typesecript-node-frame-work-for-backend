@@ -22,6 +22,7 @@ export const CONFIG_DEV:any  = {
     'REFRESH_TOKEN':process.env.REFRESH_TOKEN,
     'SESSION_NAME':process.env.SESSION_NAME,
     'SESSION_TOKEN':process.env.SESSION_TOKEN,
+    'SESSION_TIME':process.env.SESSION_TIME,
 
     'ROOT_FOLDER':'nodemc',
     'DB_TYPE':process.env.DB_TYPE

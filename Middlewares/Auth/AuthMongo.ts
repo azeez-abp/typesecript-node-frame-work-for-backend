@@ -5,12 +5,15 @@ import * as jsonwebtoken from 'jsonwebtoken'
 import * as key from '../../Lib/Config/keys/Key'
 import { Cookie } from "../../Lib/Functions/Cookie";
 import { SessionWorker } from "../../Lib/SessionWorker/Session";
+//const passport = require('passport')
+var PassportStrategy = require('passport-jwt').Strategy
 const keys:any   = key.configVar()
 const { Op } = require("sequelize");
  export class MongoAuth implements IAuth{
     username:string  =''
     password:string =''
     sessionName:string =''
+    remember:string|number=0
     DB:any  = MongooseConnection;
     req:any;
     res:any;
@@ -18,15 +21,16 @@ const { Op } = require("sequelize");
    constructor(req:any,res:any,cookieName:string){
      this.username  =req.body.email;
      this.password = req.body.password
+     this.remember = req.body.remember
      this.req  = req  
      this.res  = res;
      this.cookie_name=cookieName
 
    }
-    public async authInto(tableNamme:string){
+    public async authInto(tableName:string){
       try {
         let db = await MongooseConnection()     
-          let user  =  await db.tables[tableNamme].findOne({
+          let user  =  await db.tables[tableName].findOne({
         //  where:{
             $or:
                   [
@@ -46,7 +50,11 @@ const { Op } = require("sequelize");
           if(user.salt){
            let verify:boolean  =  this.comparePassword(this.password,user.pa,user.salt);  
            if(verify){
-              let sesion  =   await this.generateSession(user)
+         
+
+
+
+              let sesion  =   await this.generateSession(user,tableName)
               if(sesion){
                 // user.lastLogin  =new Date()
                 // await user.save()
@@ -71,7 +79,7 @@ const { Op } = require("sequelize");
     }
   
    
-    public comparePassword(password:string,hash:string,salt?:string):boolean{
+    private comparePassword(password:string,hash:string,salt?:string):boolean{
        if(salt){
         return  passwordFunction.checkCryptoPassword(password,hash,salt)
        }else{
@@ -79,21 +87,34 @@ const { Op } = require("sequelize");
        }
     }
   
-    public async generateSession(user:any){
+    private async generateSession(user:any,whichUserTable:string){
+      let session_max_age  = keys.SESSION_TIME
       const accessToken :any  =  await  jsonwebtoken.sign( {user : user.userId},
         keys.ACCESS_TOKEN, /*save in memory Not file or database*/
-       { expiresIn:   '60m' })
+       
+       { expiresIn:   session_max_age  })
 
-
+      let max_age  = 24*60*60*1000*15
       const refreshToken :any  =  await  jsonwebtoken.sign( {user :user.userId},
         keys.ACCESS_TOKEN, /*save in memory Not file or database access by req.session*/
-       { expiresIn:   '15d' })
+       { expiresIn:  max_age })
+       Cookie. maxAge =max_age
+       //console.log(Cookie)
 
-       this.res.cookie(this.cookie_name,refreshToken, Cookie)//7 days this create cookie in user browser
+       this.res.cookie(this.cookie_name,refreshToken, Cookie)//15 days this create cookie in user browser
       // user.sessionToken  = accessToken
-       this.req.session.user_details  = {id:user._id, user_id:user.userId,session_id:accessToken}
-       const session   = new SessionWorker()
-         let sesion = await session.createMongo(accessToken,refreshToken,this.req.session.cookie,user.userId)
+        this.req.user_details  = {id:user._id, user_id:user.userId,session_id:accessToken}
+        const session   = new SessionWorker()
+   
+         let sesion = await session.createMongo(accessToken
+          ,refreshToken,
+          this.req.session.cookie,
+          user.userId, 
+          session_max_age,
+          this.remember,
+           whichUserTable
+          )
+        
          if(sesion){
           return accessToken 
          }else{
@@ -104,4 +125,28 @@ const { Op } = require("sequelize");
 
 }
 
+public async auth(tableName:string){
+  // let db = await MongooseConnection()     
+  // let user  =  await db.tables[tableName]
+         ///////////////////////////////////////////////////////////////////////////////
+      //    passport.use(new PassportStrategy({},()=>{this.authInto(tableName)} ))
+      //    passport.serializeUser(function(user:any, done:any) {
+      //     console.log('serialized: ', user);       //logged when credentials matched.
+      //   done(null, user.userId);
+      // });
+    
+      // passport.deserializeUser(async function(id:any, done:any) {
+      //  await user.findOne(id, function(err:any, user:any) {
+      //       console.log('deserialized');
+    
+      //     done(null, user.userId);
+      //   });
+      // });
+
+        //////////////////////////////////////////////////////////////////////////////////
+}
+
+ public static async logout(){
+
+ }
 }

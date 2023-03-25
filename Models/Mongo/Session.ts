@@ -7,5 +7,6 @@ export const sessionObject  = {
     cookie_id:{type:String,unique:true},
     session_id:{type:String,unique:true},
     cookie:{type:Object},
+    table:{type:String}
 }
 
