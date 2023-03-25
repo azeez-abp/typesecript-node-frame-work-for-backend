@@ -40,20 +40,16 @@ const { Op } = require("sequelize");
               
          // }
            
-          })
+          }).select('password')
        
           if(!user || user === null){
              
               return this.res.status(404).json ({err:this.username+" is not found"})
           }
     
-          if(user.salt){
-           let verify:boolean  =  this.comparePassword(this.password,user.pa,user.salt);  
+         // console.log(user)
+           let verify:boolean  = await this.comparePassword(this.password,user.password);  
            if(verify){
-         
-
-
-
               let sesion  =   await this.generateSession(user,tableName)
               if(sesion){
                 // user.lastLogin  =new Date()
@@ -66,8 +62,7 @@ const { Op } = require("sequelize");
            }else{
             return this.res.status(500).json ( {err:" Inavlid login credentials"})
            }
-          }
-          
+       
   
   
       } catch (error:any) {
@@ -83,7 +78,7 @@ const { Op } = require("sequelize");
        if(salt){
         return  passwordFunction.checkCryptoPassword(password,hash,salt)
        }else{
-        return  passwordFunction.checkPass(password)
+        return  passwordFunction.checkPass(password,hash)
        }
     }
   

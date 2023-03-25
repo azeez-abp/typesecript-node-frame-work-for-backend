@@ -8,6 +8,10 @@ export const User =
         'type': String,
         'required': true,
     },
+    'userId': {
+        'type': String,
+        'required': true,
+    },
     'last_name': {
         'type': String,
         'required': true,

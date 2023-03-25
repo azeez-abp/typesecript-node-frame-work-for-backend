@@ -23,7 +23,7 @@ import {MongoDB as MongooseConnection } from './Database/Mongo/Mongo';
 async function get(){
 
 // Mailer('adioadeyoriazeez@gmail.com',
-// ['adioadeyoriazeez@gmail.com','abppreversity@gmail.com','balop3e@gmail.com'],
+// ['adioadeyoriazeez@gmail.com','abppreversity@gmail.com','balop3e@gmail.com','princedaniel0997@mail.com'],
 // 'testing node mailer',
 // `<div style='background:#000;color:#fff;font-size:34px'>
 //  Welcome Hello node Message System

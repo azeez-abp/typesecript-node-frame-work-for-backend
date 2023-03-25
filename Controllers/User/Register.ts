@@ -4,20 +4,20 @@ import { randomStr } from "../../Lib/Functions/RandonString";
 
 export class UserRegister{
 
-  static async done(data:any):Promise<any>{
+  static async done(data:{password:string,userId:string}):Promise<any>{
   
    //  console.log(pass,data)
 
      
         try {
          // console.log(data)
-            let cryptEncode:{hashPass:string,salt:string} = passwordFunction.genPasswordCryptoBase(data.pa)
+            //let cryptEncode:{hashPass:string,salt:string} = passwordFunction.genPasswordCryptoBase(data.password)
           
-           // let pass:string = await passwordFunction.genPass(data.pa)
+            let pass:string = await passwordFunction.genPass(data.password)
             let userId  = randomStr(20);
-            data.pa  = cryptEncode.hashPass
+            data.password  = pass
             data.userId  = userId
-            data.salt = cryptEncode.salt
+           // data.salt = cryptEncode.salt
 
               if(Object.keys(data).length===0){
                 return {err:"all feld are required"}
@@ -28,7 +28,7 @@ export class UserRegister{
             const user  =  db.tables.users(data);
             await  user.save();///return user  data
            if(user){
-               return {suc:`${user.fn}, your registration is completed`}
+               return {suc:`${user.first_name}, your registration is completed`}
            }
            return {err:"Registration failed, try again"}
         } catch (error) {

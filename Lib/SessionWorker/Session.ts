@@ -46,7 +46,7 @@ export class SessionWorker {
           } 
          try {
              let  session = await MongooseConnection()
-             session  = await session.tables['session']
+             session  = await session.tables['sessions']
              await session.findOneAndDelete({user_id})
              //.session(sesstionSchema)
               await session(sesstionSchema).save()
@@ -61,7 +61,9 @@ export class SessionWorker {
 
 
   static async  checksessionMongo(req:any,res:any,next:any){
-    let authValue   = req.headers.authorization  || req.headers.Authorization
+     
+   try {
+      let authValue   = req.headers.authorization  || req.headers.Authorization
     
       if(!authValue) return res.sendStatus(401)
       let token = authValue.split(" ")[1];
@@ -70,7 +72,7 @@ export class SessionWorker {
 
      //console.log(auth)
    let  session_ = await MongooseConnection()
-   let session_table  = await session_.tables['session']
+   let session_table  = await session_.tables['sessions']
     let session  =   await session_table.findOne({user_id:auth.user})
    // console.log( session,token)
     if(session){
@@ -124,6 +126,11 @@ export class SessionWorker {
        }
     }
 
+   } catch (error) {
+      console.log(error)
+   }
+
+   
     next()
   }  
 

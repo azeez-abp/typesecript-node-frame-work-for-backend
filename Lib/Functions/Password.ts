@@ -49,17 +49,8 @@ async function generateHashPassword(password:string, saltLen:number=13){
 }
 
 
-function checkPassword(password:string,hash:string){
-    // Load hash from your password DB.
-    console.log(hash)
-bcrypt.compare(password, hash, function(err:any, isMatch:boolean):boolean {
-       if(err || !isMatch){
-           return false;
-       }else{
-           return true;
-       }
-});
-
+async  function checkPassword(password:string,hash:string){
+return await bcrypt.compare(password, hash)
 }
 
 

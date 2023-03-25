@@ -1,9 +1,11 @@
 
 export const userResouece = {
     "userId": "id",
-    "fn": "First Name",
-    "mn": "Middle Name",
-    "ln": "Last Name",
-    "email": "usename",
-    "ge": "Genger",
+    "first_name": "First Name",
+    "last_name": "Last Name",
+    "email": "User Email",
+    "city": "City",
+    "address":"Address",
+    "state":"State",
+    "role":"Role"
    };

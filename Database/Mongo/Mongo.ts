@@ -1,6 +1,5 @@
 import mongoose,{ConnectOptions,Connection} from 'mongoose';
 import { configVar } from '../../Lib/Config/keys/Key';
-import { studentObject } from '../../Models/Mongo/Student';
 import { sessionObject } from '../../Models/Mongo/Session';
 import { LogEvents } from '../../Lib/Event/Event';
 import {User} from '../../Models/Mongo/Users';
@@ -37,17 +36,20 @@ const uri: string = <string> configVar().MONGO_URI
   public getConnection(): Connection {
     return this.connection;
   }
-  public static async table() {
-  const connection = await MongooseConnection.getInstance();
-  const db = connection.getConnection();
-  const Schema  = mongoose.Schema;
-  const tablesObj:any = {
-      users: db.model('user',new Schema(studentObject),'user'),
-      session:db.model('session',new Schema(sessionObject),'session'),
-} 
 
-return tablesObj
-  }
+//   public static async table() {
+//   const connection = await MongooseConnection.getInstance();
+//   const db = connection.getConnection();
+//   const Schema  = mongoose.Schema;
+//   const tablesObj:any = {
+//       users: db.model('user',new Schema(studentObject),'user'),
+//       session:db.model('session',new Schema(sessionObject),'session'),
+// } 
+
+// return tablesObj
+//   }
+
+
 }
 
 
@@ -55,9 +57,9 @@ export const MongoDB  = async()=>{
     const connection = await MongooseConnection.getInstance();
     const db = await connection.getConnection();
     const tablesObj:any = { tables:  {
-           user: db.model('user',new mongoose.Schema(studentObject, { 'timestamps': true }),'user'),
-           session:db.model('session',new mongoose.Schema(sessionObject),'session'),
-           users:db.model('users', new mongoose.Schema(User) )
+           users:db.model('users', new mongoose.Schema(User),'users' ),
+           sessions:db.model('sessions',new mongoose.Schema(sessionObject),'sessions'),
+          
     }      
     }
     return tablesObj
