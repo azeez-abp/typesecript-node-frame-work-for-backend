@@ -70,19 +70,19 @@ export class SessionWorker {
       let auth = JSON.parse( base64decode(token.split('.')[1]))
       //{ user: 'qXBJplCUa19sobN9HD6h', iat: 1679715269, exp: 1679718869 }=auth 
 
-     //console.log(auth)
+   
    let  session_ = await MongooseConnection()
    let session_table  = await session_.tables['sessions']
     let session  =   await session_table.findOne({user_id:auth.user})
    // console.log( session,token)
-    if(session){
+    if(session){ 
+       
    //    let  session_expire   = session.expires.match(/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/)[0].split("T")
       //let exp :number|Date = new Date( session.expires)
       let exp :number|Date = new Date( auth.exp*1000)
       let today:number|Date =  new Date()
      //console.log(exp ," ", today,"exp", new Date(exp), new Date(today) )
        if(exp < today ){
-      
           if(!session.rememeber) return res.status(401).json({err:"Session expired and it is not remembe"}) 
          //\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}
          let user_cookie  = JSON.parse(session.cookie)

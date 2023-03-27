@@ -35,27 +35,6 @@ const passport = require('passport')
  //
 /// require this on the page where you call passport.authenticate   
 const MongoPassportAutheChecker:Function   = async (tableName:string,req:any,res:any)=>{
-
-   
-      // let authValue   = req.headers.authorization  || req.headers.Authorization
-    
-      // if(!authValue) return res.sendStatus(401)
-      // let token = authValue.split(" ")[1];
-
-      // let s_   =  new  SessionWorker()
-      //  let check_session:any =  await s_.checksessionMongo(token)
-      //  if(check_session. has_regenerate){
-      //    if( req.headers.authorization ){
-      //     req.headers.authorization  = "Bearer "+check_session.has_regenerate
-      //    } else{
-      //     req.headers.Authorization  = "Bearer "+check_session.has_regenerate
-      //    }  
-      //  }
-
-      // if(check_session.logout){
-      //   res.status(401).send({err:"Unauthorized"})
-      // } 
-
       opts.secretOrKey = keys_.ACCESS_TOKEN;
       opts.ignoreExpiration  = false
       opts.passReqToCallback =false      
@@ -64,15 +43,12 @@ const MongoPassportAutheChecker:Function   = async (tableName:string,req:any,res
     // console.log(req.headers.authorization)
        return  passport.use(new PassportStrategy(opts, async(jwt_payload:any, done:any) =>{
         let db:any =   await MongooseConnection()
-            await db.tables[tableName].findOne(
+           db.tables[tableName].findOne(
             {
                 where:{userId:jwt_payload.user}
             },
-
-          // { 
-          //  // $project: { pa: 0, salt: 0,_id:0,gender: }
-          // },
-         { pa: 0, salt: 0,_id:0 }).select({ fn: "Firstname" }).exec( function(err:any, user:any
+        
+         { _id:0 }).exec( function(err:any, user:any
              ) {
                  if (err) {
                

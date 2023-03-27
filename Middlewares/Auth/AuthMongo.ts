@@ -66,8 +66,9 @@ const { Op } = require("sequelize");
   
   
       } catch (error:any) {
+        console.log(error)
      
-        this.res.status(500).json({err:error.message+". Please check the table name, and the field should be email and password"})
+        //this.res.status(500).json({err:error.message+". Please check the table name, and the field should be email and password"})
         //return 
       }
     
@@ -83,14 +84,20 @@ const { Op } = require("sequelize");
     }
   
     private async generateSession(user:any,whichUserTable:string){
-      let session_max_age  = keys.SESSION_TIME
+      let session_max_age  = keys.SESSION_TIME    
+         console.log( keys.ACCESS_TOKEN)
       const accessToken :any  =  await  jsonwebtoken.sign( {user : user.userId},
         keys.ACCESS_TOKEN, /*save in memory Not file or database*/
+ 
        
-       { expiresIn:   session_max_age  })
+       { 
+        expiresIn:   session_max_age,
+        algorithm:'HS256' 
+      
+      })
 
       let max_age  = 24*60*60*1000*15
-      const refreshToken :any  =  await  jsonwebtoken.sign( {user :user.userId},
+      const refreshToken :any  =  await  jsonwebtoken.sign({user :user.userId},
         keys.ACCESS_TOKEN, /*save in memory Not file or database access by req.session*/
        { expiresIn:  max_age })
        Cookie. maxAge =max_age
@@ -111,7 +118,7 @@ const { Op } = require("sequelize");
           )
         
          if(sesion){
-          return accessToken 
+          return {accessToken,refreshToken} 
          }else{
           return false
          }

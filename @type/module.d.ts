@@ -1,1 +1,5 @@
 declare module 'express'
+declare module 'cookie-parser'
+declare module 'body-parser'
+declare module 'passport'
+declare module 'jsonwebtoken'

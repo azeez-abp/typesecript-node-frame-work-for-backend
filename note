@@ -1,2 +1,3 @@
 git push biyawa_backend_azeez azeez_initial
 princedaniel0997@mail.com
+curl http://localhost:8001/health

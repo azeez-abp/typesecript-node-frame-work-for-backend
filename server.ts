@@ -1,14 +1,11 @@
-//const express  = require('express');
-import express,{Response,Request} from 'express'
+
+import express from 'express'
 const app    = express();
-const router  = express.Router();
 const cors  = require('cors');
 const session = require('express-session')
 import cookie_parser  =require('cookie-parser')  
 import * as body_parser from 'body-parser'
-import UserRoute from './Routes/User';
-import { request } from 'http';
-const passport  =require('passport') 
+import passport  =require('passport') 
  import { LogEvents } from "./Lib/Event/Event";
  import { Session } from './Lib/Functions/Session';
  const path  = require('path')
@@ -20,6 +17,8 @@ import {MongoDB as MongooseConnection } from './Database/Mongo/Mongo';
  import { Mailer } from './Lib/Functions/Mailer';
  import { SessionWorker } from './Lib/SessionWorker/Session';
  import { KeyValueReplacer } from './Resources/genearator';
+ import UserRoute from './Routes/User';
+
 async function get(){
 
 // Mailer('adioadeyoriazeez@gmail.com',
@@ -97,7 +96,7 @@ let whitelist :string[] = [
     'http://127.0.0.1:'+PORT,
     'https://127.0.0.1:'+PORT,
     '127.0.0.1:'+PORT,///this the the one
-    'localhost:7000'+PORT
+    'localhost:'+PORT
     //undefined
     ]
 var corsOptions = {
@@ -116,7 +115,7 @@ var corsOptions = {
     var corsOptions;
    // console.log(req.headers['host'],"tyu")
    //req.hostname,127.0.0.1 
-   //req.headers.host 127.0.0.1:8001
+    
     if (whitelist.indexOf(req.headers.host) !== -1) {
     /// corsOptions = { origin: true } // reflect (enable) the requested origin in the CORS response
     } else {
@@ -137,24 +136,6 @@ app.use(body_parser.text())
 app.use(cors(corsOptionsDelegate));
 //app.use(cookie_parser());
 
-// app.use(function(request:any, response:any, next:any) {
-//   if(request.session  ){
-//     console.log(request.cookie, 'rtyui',request.session)
-//   }
-
-//   console.log(request.headers.authorization)
-//   if (request.session && !request.session.regenerate) {
-//       request.session.regenerate = (cb:Function) => {
-//           cb()
-//       }
-//   }
-//   if (request.session && !request.session.save) {
-//       request.session.save = (cb:Function) => {
-//           cb()
-//       }
-//   }
-//   next()
-// })
 app.use(passport.initialize() );
 app.use(Session.session())///use your define session
 app.use(express.static(path.join(__dirname,'/public')))
