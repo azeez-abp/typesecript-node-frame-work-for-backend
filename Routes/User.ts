@@ -2,21 +2,15 @@ import { UserRegister } from "../Controllers/User/Register"
 import { SessionWorker } from "../Lib/SessionWorker/Session"
 import { MongoAuth } from "../Middlewares/Auth/AuthMongo"
 import { PassportAuthWithJsonChecker } from "../Middlewares/PassportAuthWithJwtStrategyAuthChecker"
-import { applyPassportStrategyMongo  } from "../Middlewares/PassportJWT"
 //import * as passport from 'passport'
-const passport  = require('passport')
+//import  { passportjwtMongo } from "../Middlewares/PassportJWT"
+import passport from 'passport'
 
 let UserRoute= (app:any)=>{
-  //app.use(passport.initialize())
-  applyPassportStrategyMongo ('users',passport)()
-//app.use(  )
- // verifier()
-  //PassportAuthWithJsonChecker.MongoPassportAutheChecker('users')  
-// app.use((rq:any,rs:any,next:any)=>{
-
-//   PassportAuthWithJsonChecker.MongoPassportAutheChecker('users',rq,rs)  
-//   next()
-// }  )
+app.use((req:any,res:any,next:any)=>{
+ PassportAuthWithJsonChecker.MongoPassportAutheChecker('users',req,res)  
+next()
+ })
 
  app.get('/',(req:any,res:any)=>{
 
@@ -31,8 +25,9 @@ let UserRoute= (app:any)=>{
   })
 
   app.post('/api/v1/user/profile', 
- //SessionWorker.checksessionMongo,
-  passport.authenticate('jwt', { session: false }) ,
+    // SessionWorker.checksessionMongo,
+    //passportjwtMongo('users').authenticate('jwt', { session: false }) ,
+    passport.authenticate('jwt', { session: false }) ,
   (req:any,res:any)=>{
     console.log( req.isAuthenticated())
    //  console.log(req.session,req.user_details) 

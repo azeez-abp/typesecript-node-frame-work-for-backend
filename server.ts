@@ -1,5 +1,5 @@
 
-import express from 'express'
+import express, { Request, Response } from 'express';
 const app    = express();
 const cors  = require('cors');
 const session = require('express-session')

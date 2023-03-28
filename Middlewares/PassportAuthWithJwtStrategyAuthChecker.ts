@@ -1,5 +1,5 @@
-var PassportStrategy = require('passport-jwt').Strategy,
-    ExtractJwt = require('passport-jwt').ExtractJwt;
+
+import { ExtractJwt, Strategy as PassportStrategy, VerifiedCallback } from 'passport-jwt';    
 var opts:any = {}
 import * as keys from '../Lib/Config/keys/Key'
 import { MongoDB as MongooseConnection } from '../Database/Mongo/Mongo';
@@ -39,43 +39,48 @@ const MongoPassportAutheChecker:Function   = async (tableName:string,req:any,res
       opts.ignoreExpiration  = false
       opts.passReqToCallback =false      
       opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
+      opts.algorithms =['HS256'] 
       
     // console.log(req.headers.authorization)
-       return  passport.use(new PassportStrategy(opts, async(jwt_payload:any, done:any) =>{
-        let db:any =   await MongooseConnection()
-           db.tables[tableName].findOne(
-            {
-                where:{userId:jwt_payload.user}
-            },
-        
-         { _id:0 }).exec( function(err:any, user:any
-             ) {
-                 if (err) {
-               
-                     return done(err, false);
-                 }
-                 if (user) {
-                  //  return done(null, user ) ;
-                     return done(null, KeyValueReplacer.replace( [user], userResouece ) ) ;
-                 } else {
-              
-                     return done(null, false);
-                     // or you could create a new account
-                 }
-             });
+  const strategyCallback:VerifiedCallback  =  async(jwt_payload:any, done:any) =>{
+    let db:any =   await MongooseConnection()
+       db.tables[tableName].findOne(
+        {
+            where:{userId:jwt_payload.user}
+        },
+    
+     { _id:0 }).exec( function(err:any, user:any
+         ) {
+             if (err) {
+           
+                 return done(err, false);
+             }
+             if (user) {
+              //  return done(null, user ) ;
+                 return done(null, KeyValueReplacer.replace( [user], userResouece ) ) ;
+             } else {
+          
+                 return done(null, false);
+                 // or you could create a new account
+             }
+         });
 
-         
+     
 
-        }))
+    }  
+       return  passport.use(new PassportStrategy(opts, strategyCallback ))
 
 
         
         
 }
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
  
 
 const jsw_passport_auth_mysql_chekcer    = (tableName:string)=>{
-       const getUser:Function  =async (payload:any,done:any)=>{
+
+       const getUser:VerifiedCallback =async (payload:any,done:any)=>{
       try {
         const user:any  =   await MysqlDB.getInstance().table(tableName).findOne({
             where:{

@@ -12,7 +12,7 @@
 */
 class keyValueReplace{
 
-    * keyReplacer($json:any,map:any){
+   private * keyReplacer($json:any,map:any){
         // if(Object.keys($json).length>0){
         //     $json  = [$json]
         // }
@@ -40,7 +40,7 @@ class keyValueReplace{
         }
 
 
-     public replace($json:any,$map:any){
+     public replace($json:object[],$map:object){
        
         for(let n of  this.keyReplacer($json,$map)){
             return n

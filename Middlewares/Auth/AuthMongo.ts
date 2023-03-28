@@ -40,7 +40,7 @@ const { Op } = require("sequelize");
               
          // }
            
-          }).select('password')
+          }).select('password userId')
        
           if(!user || user === null){
              
@@ -84,22 +84,26 @@ const { Op } = require("sequelize");
     }
   
     private async generateSession(user:any,whichUserTable:string){
-      let session_max_age  = keys.SESSION_TIME    
-         console.log( keys.ACCESS_TOKEN)
-      const accessToken :any  =  await  jsonwebtoken.sign( {user : user.userId},
-        keys.ACCESS_TOKEN, /*save in memory Not file or database*/
- 
+      let session_max_age  = keys.SESSION_TIME
+      const userObj  = {user : user.userId}
+      console.log(userObj)
+      const accessToken :any  =  await  jsonwebtoken.sign(userObj ,
+        keys.ACCESS_TOKEN, /*save in memory Not file or database
+          if jsonwebtoken.sign conatains an error, PassportStrategy callback will not be called
+          
+         */
        
        { 
-        expiresIn:   session_max_age,
+        expiresIn: session_max_age,
         algorithm:'HS256' 
       
       })
 
-      let max_age  = 24*60*60*1000*15
-      const refreshToken :any  =  await  jsonwebtoken.sign({user :user.userId},
+      
+      const refreshToken :any  =  await  jsonwebtoken.sign(userObj,
         keys.ACCESS_TOKEN, /*save in memory Not file or database access by req.session*/
-       { expiresIn:  max_age })
+       { expiresIn: '15d',algorithm:'HS256' })
+       let max_age  = 24*60*60*1000*15
        Cookie. maxAge =max_age
        //console.log(Cookie)
 
