@@ -40,7 +40,7 @@ let UserRoute= (app:any)=>{
 
  })
 
- app.post('api/v1/user/request_password_reset', PassWord.requestReset)
+ app.post('/api/v1/user/request_password_reset', PassWord.requestReset)
 
  /////////////////////////////////////////////////////request with required auth below here
   app.use(SessionWorker.checksessionMongo) ////this function will come first to regenerate token if expire the new token will be

@@ -76,6 +76,7 @@ export class SessionWorker {
     let session  =   await session_table.findOne({user_id:auth.user})
    // console.log( session,token)
     if(session){ 
+      if(session.session_id !== token) return res.status(401).json({err:"Unautheticated"})
       
    //    let  session_expire   = session.expires.match(/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/)[0].split("T")
       //let exp :number|Date = new Date( session.expires)

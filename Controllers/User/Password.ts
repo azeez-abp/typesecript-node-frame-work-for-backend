@@ -27,7 +27,7 @@ export class PassWord{
       }
       const token  = randomStr(62)
       const front_url  = `${url}?email=$${email}&token=$${token} to reset`
-      let reset_token =await db.tables.password_requests.findOneAndUpdate(
+      let reset_token = await db.tables.password_requests.findOneAndUpdate(
         {token:token},
      {     email:email,
            token:token, 
@@ -37,18 +37,19 @@ export class PassWord{
      },{
         new: true
      } )
-
-     reset_token &&  Mailer(
+   res.json({reset_token})
+    Mailer(
         "Biyawa",
         [email],
         "Request email reset by "+user.first_name,
         `This is to inform you ${user.first_name} has requested for password reset on your account , if this is you go to ${front_url} `,
         (err:any,suc:any)=>{
          if(suc){
+            res.json({suc:"DONE"})
             console.log("MAIL SEND")
          }
         })
-
+   
       next()
     }
 }
