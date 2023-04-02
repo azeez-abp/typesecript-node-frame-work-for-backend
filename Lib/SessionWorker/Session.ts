@@ -76,13 +76,14 @@ export class SessionWorker {
     let session  =   await session_table.findOne({user_id:auth.user})
    // console.log( session,token)
     if(session){ 
-       
+      
    //    let  session_expire   = session.expires.match(/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/)[0].split("T")
       //let exp :number|Date = new Date( session.expires)
       let exp :number|Date = new Date( auth.exp*1000)
       let today:number|Date =  new Date()
      //console.log(exp ," ", today,"exp", new Date(exp), new Date(today) )
-       if(exp < today ){
+       if(!req.isAuthenticated()){ ///session expired
+      
           if(!session.rememeber) return res.status(401).json({err:"Session expired and it is not remembe"}) 
          //\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}
          let user_cookie  = JSON.parse(session.cookie)
@@ -90,18 +91,38 @@ export class SessionWorker {
         if(cookie_exp_date <= today){
             return res.status(401).json({logout:"Login session expired",err:"unauthorized"})
           }else{
-           
-            let session_max_age  = keys.SESSION_TIME
-            const accessToken :string  =  await  jsonwebtoken.sign( {user : session.user_id},
+            let session_max_age  = 0
+                
+     let d  = '3m'//keys.SESSION_TIME
+     let n:RegExpMatchArray|null = d.match(/(\d+)/)
+     let l:RegExpMatchArray|null = d.match(/(\D)/)
+     if(n&&l){
+    //  console.log(n[0],l[0])  
+      const period_map :any = {
+         ms:1000,
+         s: 1,
+         m:60,
+         h:60*60,
+         d:60*60*24,
+         w: 60*60*24*7
+      } 
+
+      session_max_age = parseInt(n[0]) * period_map[l[0]]
+   }
+               const user_obj  =  {user : session.user_id}
+               console.log(user_obj, session_max_age)
+            const accessToken :string  =  await  jsonwebtoken.sign(user_obj,
               keys.ACCESS_TOKEN, /*save in memory Not file or database*/
              
-             { expiresIn:   session_max_age  })
+             { expiresIn: session_max_age,  
+            // algorithm:'RS256' ,
+             algorithm:'HS256'   })
              let session_regenerate =await session_table.findOneAndUpdate(
                {user_id:session.user_id},
             {     lastModified:(new Date()).getTime(),
                   session_id:accessToken, 
                   expires :new Date((new Date().getTime())+(session_max_age*1000) ),
-                  rememeber:1
+                  rememeber:session.remember
             
             },{
                new: true
@@ -110,15 +131,18 @@ export class SessionWorker {
              // let $this  = new SessionWorker()
             // await $this.createMongo(accessToken,session.cookie_id,session.cookie,session.session_id, session_max_age)
              if(session_regenerate ) {
-               if( req.headers.authorization ){
+              
+               if( req.headers.authorization ){ 
                   req.headers.authorization  = "Bearer "+accessToken
+                  console.log(req.headers.authorization, " in session" )
                  } else{
                   req.headers.Authorization  = "Bearer "+accessToken
                  }  
               //   req.azeez = {"name":"done"} this will be accessible in the next req
               // return {has_regenerate:accessToken}  
             //   return res.status(200).json({suc:"User reautheticated"})
-               
+               req.session_regenerate  = accessToken
+            
              } 
             
           }
@@ -130,7 +154,7 @@ export class SessionWorker {
       console.log(error)
    }
 
-   
+  
     next()
   }  
 

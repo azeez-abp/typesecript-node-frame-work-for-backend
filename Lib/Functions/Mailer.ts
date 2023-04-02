@@ -20,7 +20,7 @@ export const Mailer  = (from:string,to:string[],subject:string,messge_content:st
      })
 //console.log(path.join(__dirname,'dkim.pem'))
      transporter.use('stream', require('nodemailer-dkim').signer({
-      domainName: 'kreata.ee',
+      domainName: 'abp.com.ng',
       keySelector: 'test',
       privateKey: fs.readFileSync(path.join(__dirname,'dkim.pem'))
   }));

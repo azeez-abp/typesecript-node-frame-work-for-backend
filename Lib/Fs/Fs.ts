@@ -1,25 +1,23 @@
-let fs   = require('fs');
-let fsPromise  = fs.promises;
-let path   = require('path');
-const root_folder  = require('../../Lib/Config/keys/Key').ROOT_FOLDER
-let re   = new RegExp(`.+${root_folder}`)
-let root  = re.exec(__dirname)? re.exec(__dirname)[0]:__dirname 
+import * as fs from 'fs'
+import * as fsPromise from 'fs/promises'
+//let fsPromise  = fs.promises;
+// const root_folder  = require('../../Lib/Config/keys/Key').ROOT_FOLDER
+// let re   = new RegExp(`.+${root_folder}`)
+// let root  = re.exec(__dirname)? re.exec(__dirname)[0]:__dirname 
 
-let fsObj  = {
-    readFile:($path,writeToFile=false)=>{
+let fsStreamingObj  = ($path:string,writeToFile:boolean=false):boolean=>{
            if(fs.existsSync($path)){
-               let rf  = fs.createReadStream($path,{encoding:'utf-8'})
-                let  ma  = $path.match(/.+(?=\.)/) 
+                let rf  = fs.createReadStream($path,{encoding:'utf-8'})
+                let  ma:any  = $path.match(/.+(?=\.)/)
                 let  ext  = $path.match(/(?<=\.).+/) 
               //  console.log(ext) 
                let wf  = fs.createWriteStream(ma[0]+'_new.'+ext )
-               rf.on('data',(data)=>{
-                 console.log(writeToFile)
-
-                  //do something
-               })
+              //  rf.on('data',(data)=>{
+              //   // console.log(writeToFile)
+              //  })
                 if(writeToFile){
                    rf.pipe(wf)
+                  
                 }
        
             
@@ -27,17 +25,16 @@ let fsObj  = {
             console.log($path +' does not find')
              return false
            };
-    },
+    return true
 }
 
 
-let addToData  = async ($path,$data)=>{
+let appendDataToFile  = async ($path:string,$data: string):Promise<any>=>{
   
       if(fs.existsSync($path)){
        // console.log($path);
           try {
-              await fsPromise.appendFile($path,$data);
-               return true;
+            return await fsPromise.appendFile($path,$data);
           } catch (error) {
              console.log('error is :'+error);
              return false;
@@ -47,16 +44,16 @@ let addToData  = async ($path,$data)=>{
         console.log("path not found")
         return false;
       }
-
+  //return false
 }
 
-let getData = async ($path)=>{
+let getData = async ($path:string):Promise<any>=>{
  
-  if(fs.existsSync($path)){
+  if(fs.existsSync($path)) {
     ///console.log($path);
       try {
-          await fsPromise.readFile($path , {encoding:'utf-8'});
-           return true;
+        return  await fsPromise.readFile($path , {encoding:'utf-8'});
+         
       } catch (error) {
          console.log('error is :'+error);
          return false;
@@ -68,7 +65,7 @@ let getData = async ($path)=>{
   }
 
 }
-let add_Data = async ($path,$data)=>{
+let addDataToFile = async ($path:string,$data:string)=>{
   if(fs.existsSync($path)){
      try {
        await fs.writeFile($path,$data,(err)=>{
@@ -88,4 +85,10 @@ let add_Data = async ($path,$data)=>{
 
 //fsObj.readFile(path.join(root,'Model','file.txt'),true)
 
-module.exports = {addTo:addToData,add:add_Data}
+export const fileFunction:any= {
+  appendDataToFile ,
+  addDataToFile,
+  getData,
+  fsStreamingObj
+
+}

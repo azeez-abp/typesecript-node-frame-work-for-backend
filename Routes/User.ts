@@ -1,3 +1,4 @@
+import { invalidateUser } from "../Controllers/User/Logout"
 import { UserRegister } from "../Controllers/User/Register"
 import { SessionWorker } from "../Lib/SessionWorker/Session"
 import { MongoAuth } from "../Middlewares/Auth/AuthMongo"
@@ -7,6 +8,10 @@ import { PassportAuthWithJsonChecker } from "../Middlewares/PassportAuthWithJwtS
 import passport from 'passport'
 
 let UserRoute= (app:any)=>{
+ 
+  app.use(SessionWorker.checksessionMongo) ////this function will come first to regenerate token if expire the new token will be
+  //in req.user_regenetate
+  
 app.use((req:any,res:any,next:any)=>{
  PassportAuthWithJsonChecker.MongoPassportAutheChecker('users',req,res)  
 next()
@@ -23,15 +28,15 @@ next()
    let auth:any   =  await (new MongoAuth(req,res,"app_user_cookie")).authInto('users')
    
   })
+ 
 
-  app.post('/api/v1/user/profile', 
-    // SessionWorker.checksessionMongo,
+  app.post('/api/v1/user/profile' , 
     //passportjwtMongo('users').authenticate('jwt', { session: false }) ,
     passport.authenticate('jwt', { session: false }) ,
   (req:any,res:any)=>{
-    console.log( req.isAuthenticated())
-   //  console.log(req.session,req.user_details) 
-    return res.status(200).json({suc:req.user,"aze":req.azeez})
+    console.log( req.isAuthenticated(), req.session_regenerate,"yesv2")
+   
+   return res.status(200).json({suc:req.user, regenerate_tonen:req.session_regenerate})
    })
 
   app.post('/api/v1/user/register',async(req:any,res:any)=>{
@@ -51,6 +56,7 @@ next()
   })
 
 
+  app.post('/api/v1/user/logout', invalidateUser)
 
 }  
 

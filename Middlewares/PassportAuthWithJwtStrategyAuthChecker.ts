@@ -1,14 +1,15 @@
 
-import { ExtractJwt, Strategy as PassportStrategy, VerifiedCallback } from 'passport-jwt';    
-var opts:any = {}
+import passportJWT, { ExtractJwt, Strategy as PassportStrategy, VerifiedCallback } from 'passport-jwt';    
 import * as keys from '../Lib/Config/keys/Key'
 import { MongoDB as MongooseConnection } from '../Database/Mongo/Mongo';
 import MysqlDB from '../Database/Mysql/SequenlizeDB';
 import { KeyValueReplacer } from '../Resources/genearator';
 import { userResouece } from '../Resources/User/Resources';
-import { SessionWorker } from '../Lib/SessionWorker/Session';
-
+import * as fs from 'fs';
+import path from 'path';
+//console.log(path.dirname('cert'),path.resolve(__dirname),process.cwd())
 const keys_:any  = keys.configVar()
+
 const passport = require('passport')
 
 
@@ -30,19 +31,35 @@ const passport = require('passport')
 ///call the function pass passport
 //.passport-local for implementing local strategy, and passport-jwt for retrieving and verifying JWTs.
 
+//const rsaPublick  = fs.readFileSync( path.join(process.cwd(),'cert','passport_pub.perm'),'utf-8' )
 
-
+    var opts:passportJWT.StrategyOptions = {
+      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken()
+    }  
+      //opts.secretOrKey = rsaPublick  
+      opts.secretOrKey =  keys_.ACCESS_TOKEN
+      opts.ignoreExpiration  = false
+      opts.passReqToCallback =false      
+      opts.algorithms =['HS256'] 
+    //  opts.algorithms =['RS256'] 
  //
 /// require this on the page where you call passport.authenticate   
 const MongoPassportAutheChecker:Function   = async (tableName:string,req:any,res:any)=>{
-      opts.secretOrKey = keys_.ACCESS_TOKEN;
-      opts.ignoreExpiration  = false
-      opts.passReqToCallback =false      
-      opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
-      opts.algorithms =['HS256'] 
+
+  var opts2:passportJWT.StrategyOptions = {
+    jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken()
+  }  
+    //opts.secretOrKey = rsaPublick  
+    opts2.secretOrKey =  keys_.ACCESS_TOKEN
+    opts2.ignoreExpiration  = false
+    opts2.passReqToCallback =false      
+    opts2.algorithms =['HS256'] 
+   
       
     // console.log(req.headers.authorization)
+
   const strategyCallback:VerifiedCallback  =  async(jwt_payload:any, done:any) =>{
+           console.log(req.headers.authorization, "yes")
     let db:any =   await MongooseConnection()
        db.tables[tableName].findOne(
         {
@@ -52,14 +69,15 @@ const MongoPassportAutheChecker:Function   = async (tableName:string,req:any,res
      { _id:0 }).exec( function(err:any, user:any
          ) {
              if (err) {
-           
+              
                  return done(err, false);
              }
              if (user) {
               //  return done(null, user ) ;
+                console.log(user)
                  return done(null, KeyValueReplacer.replace( [user], userResouece ) ) ;
              } else {
-          
+               
                  return done(null, false);
                  // or you could create a new account
              }
@@ -67,8 +85,9 @@ const MongoPassportAutheChecker:Function   = async (tableName:string,req:any,res
 
      
 
-    }  
-       return  passport.use(new PassportStrategy(opts, strategyCallback ))
+    } 
+         
+       return  passport.use(new PassportStrategy(opts2, strategyCallback ))
 
 
         

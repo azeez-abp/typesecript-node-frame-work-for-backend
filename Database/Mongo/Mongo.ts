@@ -1,4 +1,4 @@
-import mongoose,{ConnectOptions,Connection} from 'mongoose';
+import mongoose,{ConnectOptions,Connection, MongooseError} from 'mongoose';
 import { configVar } from '../../Lib/Config/keys/Key';
 import { sessionObject } from '../../Models/Mongo/Session';
 import { LogEvents } from '../../Lib/Event/Event';
@@ -13,12 +13,18 @@ const uri: string = <string> configVar().MONGO_URI
 
   }
   public static async getInstance(): Promise<MongooseConnection> {
-    if (!MongooseConnection.instance) {
+   try {
+      if (!MongooseConnection.instance) {
   
       MongooseConnection.instance = new MongooseConnection();
       await MongooseConnection.instance.connect();
     }
-    return MongooseConnection.instance;
+  
+   } catch (error:any) {
+    console.log(error.message,"BIG ERROR CONNECTION")
+   }
+  
+   return MongooseConnection.instance;
   }
 
   private async connect(): Promise<void> {

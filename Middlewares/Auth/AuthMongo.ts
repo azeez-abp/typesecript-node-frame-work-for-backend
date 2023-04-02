@@ -5,6 +5,8 @@ import * as jsonwebtoken from 'jsonwebtoken'
 import * as key from '../../Lib/Config/keys/Key'
 import { Cookie } from "../../Lib/Functions/Cookie";
 import { SessionWorker } from "../../Lib/SessionWorker/Session";
+import * as fs from 'fs';
+import path from 'path';
 //const passport = require('passport')
 var PassportStrategy = require('passport-jwt').Strategy
 const keys:any   = key.configVar()
@@ -84,27 +86,52 @@ const { Op } = require("sequelize");
     }
   
     private async generateSession(user:any,whichUserTable:string){
-      let session_max_age  = keys.SESSION_TIME
+      let session_max_age  = 0
+     // const rsarivatekey  = fs.readFileSync( path.join(process.cwd(),'cert','passport.perm'),'utf-8' )
+       
+     let d  = '3m'//keys.SESSION_TIME
+     let n:RegExpMatchArray|null = d.match(/(\d+)/)
+     let l:RegExpMatchArray|null = d.match(/(\D)/)
+     if(n&&l){
+    //  console.log(n[0],l[0])  
+      const period_map :any = {
+         ms:1000,
+         s: 1,
+         m:60,
+         h:60*60,
+         d:60*60*24,
+         w: 60*60*24*7
+      } 
+      session_max_age = parseInt(n[0]) * period_map[l[0]]
+     }
+
+     console.log(session_max_age, "MAX AGE")
+
       const userObj  = {user : user.userId}
-      console.log(userObj)
+     // console.log(userObj)
       const accessToken :any  =  await  jsonwebtoken.sign(userObj ,
-        keys.ACCESS_TOKEN, /*save in memory Not file or database
+        keys.ACCESS_TOKEN,
+      //rsarivatekey ,
+       /*save in memory Not file or database
           if jsonwebtoken.sign conatains an error, PassportStrategy callback will not be called
           
          */
        
        { 
         expiresIn: session_max_age,
+       // algorithm:'RS256' ,
         algorithm:'HS256' 
       
       })
-
-      
+  
+ 
       const refreshToken :any  =  await  jsonwebtoken.sign(userObj,
-        keys.ACCESS_TOKEN, /*save in memory Not file or database access by req.session*/
+        keys.ACCESS_TOKEN
+      // rsarivatekey
+        , /*save in memory Not file or database access by req.session*/
        { expiresIn: '15d',algorithm:'HS256' })
        let max_age  = 24*60*60*1000*15
-       Cookie. maxAge =max_age
+       Cookie.maxAge = max_age
        //console.log(Cookie)
 
        this.res.cookie(this.cookie_name,refreshToken, Cookie)//15 days this create cookie in user browser

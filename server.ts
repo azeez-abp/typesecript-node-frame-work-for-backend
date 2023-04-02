@@ -6,21 +6,28 @@ const session = require('express-session')
 import cookie_parser  =require('cookie-parser')  
 import * as body_parser from 'body-parser'
 import passport  =require('passport') 
- import { LogEvents } from "./Lib/Event/Event";
- import { Session } from './Lib/Functions/Session';
+//import { LogEvents } from "./Lib/Event/Event";
+import { Session } from './Lib/Functions/Session';
+
  const path  = require('path')
+
 // import { configVar } from './Lib/Config/keys/Key';
 // import MysqlDB from './Database/Mysql/SequenlizeDB';
- import { randomStr as random } from './Lib/Functions/RandonString';
+// import { randomStr as random } from './Lib/Functions/RandonString';
 // import { FileUploader } from './Lib/Fs/uploader/FileUploder';
-import {MongoDB as MongooseConnection } from './Database/Mongo/Mongo';
- import { Mailer } from './Lib/Functions/Mailer';
- import { SessionWorker } from './Lib/SessionWorker/Session';
- import { KeyValueReplacer } from './Resources/genearator';
+// import {MongoDB as MongooseConnection } from './Database/Mongo/Mongo';
+//  import { Mailer } from './Lib/Functions/Mailer';
+//  import { SessionWorker } from './Lib/SessionWorker/Session';
+//  import { KeyValueReplacer } from './Resources/genearator';
  import UserRoute from './Routes/User';
+import { genKeyPair } from './cypto/CryptoGen';
+//import promMetricType from './Lib/Event/PromMonitoring';
 
 async function get(){
 
+ 
+ //genKeyPair(path.join(__dirname,'cert','passport'))
+//console.log( promMetricType.counter)
 // Mailer('adioadeyoriazeez@gmail.com',
 // ['adioadeyoriazeez@gmail.com','abppreversity@gmail.com','balop3e@gmail.com','princedaniel0997@mail.com'],
 // 'testing node mailer',

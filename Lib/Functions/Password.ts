@@ -5,7 +5,7 @@ const  crypto  = require('crypto');
 
 function genPasswordCryptoBase(password:string){
      let salt  = crypto.randomBytes(64).toString('hex')
-     let hashPass  = crypto.pbkdf2Sync(password,salt,1000,64,'sha512').toString('hex')
+     let hashPass  = crypto.pbkdf2Sync(password,salt,10000,64,'sha512').toString('hex')
    let res :any ={
              salt:salt,
              hashPass:hashPass
@@ -15,7 +15,7 @@ function genPasswordCryptoBase(password:string){
 
 function checkCryptoPassword(password:string,hashedPaswordFromDb:string,saltFromDb:string):boolean{
    
-    let verify  = crypto.pbkdf2Sync(password,saltFromDb,1000,64,'sha512').toString('hex');
+    let verify  = crypto.pbkdf2Sync(password,saltFromDb,10000,64,'sha512').toString('hex');
 
       if( verify === hashedPaswordFromDb){
         return  true 
