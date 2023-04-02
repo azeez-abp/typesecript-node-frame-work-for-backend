@@ -21,7 +21,7 @@ export class UserRegister{
 
               if(Object.keys(data).length===0){
                 return {err:"all feld are required"}
-                }
+            }
 
 
               let db = await MongooseConnection()     

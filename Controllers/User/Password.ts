@@ -5,7 +5,7 @@ import { randomStr } from "../../Lib/Functions/RandonString"
 
 export class PassWord{
     public static async requestReset(req:any,res:any,next:any){
-       
+       console.log(req.isAuthenticated())
       let {email,url}  = req.body
 
       if(!email){

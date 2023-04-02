@@ -54,14 +54,14 @@ export class SessionWorker {
                   return {suc:"session created"}
                }
          } catch (error) {
-           // console.log(error)
+           // 
             return {err: error}
          } 
     }
 
 
   static async  checksessionMongo(req:any,res:any,next:any){
-     
+  
    try {
       let authValue   = req.headers.authorization  || req.headers.Authorization
     
@@ -74,17 +74,19 @@ export class SessionWorker {
    let  session_ = await MongooseConnection()
    let session_table  = await session_.tables['sessions']
     let session  =   await session_table.findOne({user_id:auth.user})
-   // console.log( session,token)
+   // 
     if(session){ 
+      
       if(session.session_id !== token) return res.status(401).json({err:"Unautheticated"})
       
    //    let  session_expire   = session.expires.match(/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/)[0].split("T")
       //let exp :number|Date = new Date( session.expires)
       let exp :number|Date = new Date( auth.exp*1000)
       let today:number|Date =  new Date()
-     //console.log(exp ," ", today,"exp", new Date(exp), new Date(today) )
-       if(!req.isAuthenticated()){ ///session expired
-      
+     //
+       console.log(exp, today)
+       if(today > exp){ ///session expired
+         
           if(!session.rememeber) return res.status(401).json({err:"Session expired and it is not remembe"}) 
          //\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}
          let user_cookie  = JSON.parse(session.cookie)
@@ -98,7 +100,7 @@ export class SessionWorker {
      let n:RegExpMatchArray|null = d.match(/(\d+)/)
      let l:RegExpMatchArray|null = d.match(/(\D)/)
      if(n&&l){
-    //  console.log(n[0],l[0])  
+    //  
       const period_map :any = {
          ms:1000,
          s: 1,
@@ -111,7 +113,7 @@ export class SessionWorker {
       session_max_age = parseInt(n[0]) * period_map[l[0]]
    }
                const user_obj  =  {user : session.user_id}
-               console.log(user_obj, session_max_age)
+               
             const accessToken :string  =  await  jsonwebtoken.sign(user_obj,
               keys.ACCESS_TOKEN, /*save in memory Not file or database*/
              
@@ -128,21 +130,21 @@ export class SessionWorker {
             },{
                new: true
             } )
-          //  console.log(session_regenerate)
+          //  
              // let $this  = new SessionWorker()
             // await $this.createMongo(accessToken,session.cookie_id,session.cookie,session.session_id, session_max_age)
              if(session_regenerate ) {
               
                if( req.headers.authorization ){ 
                   req.headers.authorization  = "Bearer "+accessToken
-                  console.log(req.headers.authorization, " in session" )
+                  
                  } else{
                   req.headers.Authorization  = "Bearer "+accessToken
                  }  
               //   req.azeez = {"name":"done"} this will be accessible in the next req
               // return {has_regenerate:accessToken}  
             //   return res.status(200).json({suc:"User reautheticated"})
-               req.session_regenerate  = accessToken
+               req.session_regenerate  = {accessToken,isNew:true}
             
              } 
             
@@ -152,7 +154,7 @@ export class SessionWorker {
     }
 
    } catch (error) {
-      console.log(error)
+      
    }
 
   

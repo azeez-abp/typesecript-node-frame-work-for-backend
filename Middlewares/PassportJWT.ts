@@ -22,9 +22,9 @@ opts.algorithms =['HS256','RS256']
 
 
 const verifier  = (tableName:string)=>{
-  console.log("USR")
+ // console.log("USR")
      return async(jwt_payload:any, done:any) => {
-      console.log("Efefew",{userId: jwt_payload},opts)
+    //  console.log("Efefew",{userId: jwt_payload},opts)
       let db:any =   await MongooseConnection()
       db.tables[tableName].findOne({userId: jwt_payload.user}, function(err:any, user:any) {
      

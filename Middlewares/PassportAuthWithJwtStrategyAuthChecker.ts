@@ -45,7 +45,7 @@ const passport = require('passport')
  //
 /// require this on the page where you call passport.authenticate   
 const MongoPassportAutheChecker:Function   = async (tableName:string,req:any,res:any)=>{
-
+       
   var opts2:passportJWT.StrategyOptions = {
     jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken()
   }  
@@ -56,10 +56,10 @@ const MongoPassportAutheChecker:Function   = async (tableName:string,req:any,res
     opts2.algorithms =['HS256'] 
    
       
-    // console.log(req.headers.authorization)
+    console.log(req.headers.authorization,'jwt')
 
   const strategyCallback:VerifiedCallback  =  async(jwt_payload:any, done:any) =>{
-           console.log(req.headers.authorization, "yes")
+       
     let db:any =   await MongooseConnection()
        db.tables[tableName].findOne(
         {
@@ -74,7 +74,7 @@ const MongoPassportAutheChecker:Function   = async (tableName:string,req:any,res
              }
              if (user) {
               //  return done(null, user ) ;
-                console.log(user)
+               // console.log(user)
                  return done(null, KeyValueReplacer.replace( [user], userResouece ) ) ;
              } else {
                
@@ -86,8 +86,10 @@ const MongoPassportAutheChecker:Function   = async (tableName:string,req:any,res
      
 
     } 
-         
+    console.log(req.isAuthenticated(),"JU+AUTE2")
        return  passport.use(new PassportStrategy(opts2, strategyCallback ))
+              //  passport.serializeUser(User.serializeUser());
+              //  passport.deserializeUser(User.deserializeUser());
 
 
         

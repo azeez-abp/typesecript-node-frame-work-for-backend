@@ -1,6 +1,7 @@
 
 import express, { Request, Response } from 'express';
 const app    = express();
+const router = express.Router();
 const cors  = require('cors');
 const session = require('express-session')
 import cookie_parser  =require('cookie-parser')  
@@ -8,6 +9,7 @@ import * as body_parser from 'body-parser'
 import passport  =require('passport') 
 //import { LogEvents } from "./Lib/Event/Event";
 import { Session } from './Lib/Functions/Session';
+//import { PassportAuthWithJsonChecker } from './Middlewares/PassportAuthWithJwtStrategyAuthChecker';
 
  const path  = require('path')
 
@@ -176,11 +178,13 @@ app.use((req:any,res:any,next:any)=>{
 
 
   UserRoute(app)
+  
 
 app.post('/fileloader2',(req:any,res:any)=>{
     res.send(req.body)
  //  console.log(req.body)
 })
+
   app.get('/*',(req:any,res:any)=>{
     //LogEvents.emit('error_log', `${req.path} return 404 Error`)
     res.send(`<h1>404 File not file</h1>`)
