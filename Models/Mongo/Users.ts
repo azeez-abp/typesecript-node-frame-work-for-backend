@@ -56,6 +56,14 @@ export const User =
          //require:true,
         'default':"/public/images/avater/ava.png"
     },
+    'created_at':{
+        'type':Date,
+        'default':Date.now
+    },
+    'updated_at':{
+        'type':Date,
+        'default':Date.now
+    }
 }
 //, { 'timestamps': true });
 

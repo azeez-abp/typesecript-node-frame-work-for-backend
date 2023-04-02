@@ -1,4 +1,5 @@
 import { invalidateUser } from "../Controllers/User/Logout"
+import { PassWord } from "../Controllers/User/Password"
 import { UserRegister } from "../Controllers/User/Register"
 import { SessionWorker } from "../Lib/SessionWorker/Session"
 import { MongoAuth } from "../Middlewares/Auth/AuthMongo"
@@ -9,13 +10,7 @@ import passport from 'passport'
 
 let UserRoute= (app:any)=>{
  
-  app.use(SessionWorker.checksessionMongo) ////this function will come first to regenerate token if expire the new token will be
-  //in req.user_regenetate
-  
-app.use((req:any,res:any,next:any)=>{
- PassportAuthWithJsonChecker.MongoPassportAutheChecker('users',req,res)  
-next()
- })
+
 
  app.get('/',(req:any,res:any)=>{
 
@@ -28,7 +23,33 @@ next()
    let auth:any   =  await (new MongoAuth(req,res,"app_user_cookie")).authInto('users')
    
   })
+
+  app.post('/api/v1/user/register',async(req:any,res:any)=>{
+    try {
+      let user  = await UserRegister.done(req.body)
+       if(user .err){
+       return  res.status(500).json( {err:user .err})
+     }
+     return  res.json( {suc:user .suc})
  
+    } catch (error) {
+    // console.log(error, 'useR reG2')
+     return res.status(501).json( {err:""})
+    }
+  
+
+ })
+
+ app.post('api/v1/user/request_password_reset', PassWord.requestReset)
+
+ /////////////////////////////////////////////////////request with required auth below here
+  app.use(SessionWorker.checksessionMongo) ////this function will come first to regenerate token if expire the new token will be
+  //in req.user_regenetate
+  
+  app.use((req:any,res:any,next:any)=>{
+  PassportAuthWithJsonChecker.MongoPassportAutheChecker('users',req,res)  
+  next()
+  })
 
   app.post('/api/v1/user/profile' , 
     //passportjwtMongo('users').authenticate('jwt', { session: false }) ,
@@ -39,21 +60,7 @@ next()
    return res.status(200).json({suc:req.user, regenerate_tonen:req.session_regenerate})
    })
 
-  app.post('/api/v1/user/register',async(req:any,res:any)=>{
-     try {
-       let user  = await UserRegister.done(req.body)
-        if(user .err){
-        return  res.status(500).json( {err:user .err})
-      }
-      return  res.json( {suc:user .suc})
-  
-     } catch (error) {
-     // console.log(error, 'useR reG2')
-      return res.status(501).json( {err:""})
-     }
-   
 
-  })
 
 
   app.post('/api/v1/user/logout', invalidateUser)

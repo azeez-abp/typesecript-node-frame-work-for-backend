@@ -3,6 +3,7 @@ import { configVar } from '../../Lib/Config/keys/Key';
 import { sessionObject } from '../../Models/Mongo/Session';
 import { LogEvents } from '../../Lib/Event/Event';
 import {User} from '../../Models/Mongo/Users';
+import { passwordObject } from '../../Models/Mongo/Password_reset';
 const uri: string = <string> configVar().MONGO_URI
 //console.log( configVar().MAIL_URL)
 
@@ -60,11 +61,13 @@ const uri: string = <string> configVar().MONGO_URI
 
 
 export const MongoDB  = async()=>{
+    
     const connection = await MongooseConnection.getInstance();
     const db = await connection.getConnection();
     const tablesObj:any = { tables:  {
            users:db.model('users', new mongoose.Schema(User),'users' ),
            sessions:db.model('sessions',new mongoose.Schema(sessionObject),'sessions'),
+           password_requests:db.model('password_requests',new mongoose.Schema(passwordObject),'password_requests')
           
     }      
     }
