@@ -1,5 +1,6 @@
+import mongoose from "mongoose";
 
-export const sessionObject  = {
+export const sessionObject  = new mongoose.Schema( {
     lastModified:{type:String},
     expires :{type:String},
     rememeber:{type:Number,default:0}, 
@@ -8,5 +9,5 @@ export const sessionObject  = {
     session_id:{type:String,unique:true},
     cookie:{type:Object},
     table:{type:String}
-}
+})
 

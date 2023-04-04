@@ -40,18 +40,19 @@ let UserRoute= (app:any)=>{
 
  })
 
- app.post('/api/v1/user/request_password_reset', PassWord.requestReset)
+
 
  /////////////////////////////////////////////////////request with required auth below here
-  app.use(SessionWorker.checksessionMongo) ////this function will come first to regenerate token if expire the new token will be
+ // app.use(SessionWorker.checksessionMongo) ////this function will come first to regenerate token if expire the new token will be
   //in req.user_regenetate
   
   app.use((req:any,res:any,next:any)=>{
   PassportAuthWithJsonChecker.MongoPassportAutheChecker('users',req,res)  
   next()
   })
-
-  app.post('/api/v1/user/profile' , 
+  app.post('/api/v1/user/request_password_reset', PassWord.requestReset)
+  app.put('/api/v1/user/password_reset', PassWord.resetPassword)
+  app.post('/api/v1/user/profile',SessionWorker.checksessionMongo , 
     //passportjwtMongo('users').authenticate('jwt', { session: false }) ,
     passport.authenticate('jwt', { session: false }) ,
   (req:any,res:any)=>{
@@ -63,7 +64,7 @@ let UserRoute= (app:any)=>{
 
 
 
-  app.post('/api/v1/user/logout', invalidateUser)
+  app.delete('/api/v1/user/logout', invalidateUser)
 
 }  
 

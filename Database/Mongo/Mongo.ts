@@ -65,12 +65,13 @@ export const MongoDB  = async()=>{
     const connection = await MongooseConnection.getInstance();
     const db = await connection.getConnection();
     const tablesObj:any = { tables:  {
-           users:db.model('users', new mongoose.Schema(User),'users' ),
-           sessions:db.model('sessions',new mongoose.Schema(sessionObject),'sessions'),
-           password_requests:db.model('password_requests',new mongoose.Schema(passwordObject),'password_requests')
+           users:db.model('users', User,'users' ),
+           sessions:db.model('sessions',sessionObject,'sessions'),
+           password_requests:db.model('password_requests',passwordObject,'password_requests')
           
     }      
     }
+
     return tablesObj
 } 
 

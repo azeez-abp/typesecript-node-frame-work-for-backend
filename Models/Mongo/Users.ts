@@ -1,7 +1,9 @@
 import mongoose, { Schema } from 'mongoose'
+import { sessionObject } from './Session';
+import { passwordObject } from './Password_reset';
 
 export const User = 
-//new Schema(
+new Schema(
     
     {
     'first_name': {
@@ -11,6 +13,7 @@ export const User =
     'userId': {
         'type': String,
         'required': true,
+        //'ref': 'sessions'
     },
     'last_name': {
         'type': String,
@@ -20,6 +23,8 @@ export const User =
         'type': String,
         'unique': true,
         'required': true,
+     ///  'ref':'password_requests'
+        
     },
     'phone': {
         'type': String,
@@ -48,8 +53,13 @@ export const User =
     },
     'role': {
         'type': String,
-        'enum': ['admin', 'manager', 'customer'],
-        'default': 'customer'
+        'enum': ['Admin', 'Manager', 'Customer'],
+        'default': 'Customer'
+    },
+    'gender': {
+        'type': String,
+        'enum': ['Male', 'Female'],
+        'required' :true
     },
     'profile_img':{
         'type':String,
@@ -63,8 +73,11 @@ export const User =
     'updated_at':{
         'type':Date,
         'default':Date.now
-    }
+    },
+
+    session:sessionObject,
+    passwoedReset:passwordObject
 }
-//, { 'timestamps': true });
+, { 'timestamps': true });
 
 //const User = mongoose.model('users', schema)
