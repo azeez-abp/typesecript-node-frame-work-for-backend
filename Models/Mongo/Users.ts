@@ -1,6 +1,7 @@
 import mongoose, { Schema } from 'mongoose'
 import { sessionObject } from './Session';
 import { passwordObject } from './Password_reset';
+import { max } from 'date-fns';
 
 export const User = 
 new Schema(
@@ -39,17 +40,17 @@ new Schema(
     'address': {
         'type': String,
         'required': true,
-        'select': false
+        //'select': false
     },
     'city': {
         'type': String,
         'required': true,
-        'select': false
+        //'select': false
     },
     'state': {
         'type': String,
         'required': true,
-        'select': false
+       // 'select': false
     },
     'role': {
         'type': String,
@@ -60,6 +61,12 @@ new Schema(
         'type': String,
         'enum': ['Male', 'Female'],
         'required' :true
+    },
+    'accountNumber': {
+        'type': Number,
+        'required' :true,
+         //'max':11,
+         'length':10
     },
     'profile_img':{
         'type':String,
@@ -75,8 +82,8 @@ new Schema(
         'default':Date.now
     },
 
-    session:sessionObject,
-    passwoedReset:passwordObject
+    'session':{type:Schema.Types.ObjectId,'ref':'sessions'},
+   'passwordReset':{type:Schema.Types.ObjectId,'ref':'password_requests'}
 }
 , { 'timestamps': true });
 

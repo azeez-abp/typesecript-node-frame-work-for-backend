@@ -30,7 +30,7 @@ export class SessionWorker {
     }
 
 
-    async  createMongo(session_id:string,cookie_id:string,cookie:any,user_id:string,session_max_age:number,remember:string|number|boolean,whichUserTable:string){
+    async  createMongo(session_id:string,cookie_id:string,cookie:any,user_id:string,session_max_age:number,remember:string|number|boolean,whichUserTable:string,agent:string=''){
         if(remember===true || remember ==='true'){
              remember =1
         }
@@ -42,16 +42,19 @@ export class SessionWorker {
              session_id:session_id,
              cookie_id:cookie_id,
              cookie: JSON.stringify(cookie),
-             table:whichUserTable
+             table:whichUserTable,
+             user_agent:agent
           } 
          try {
-             let  session = await MongooseConnection()
-             session  = await session.tables['sessions']
+             let  db = await MongooseConnection()
+             let  session  = await db.tables['sessions']
              await session.findOneAndDelete({user_id})
              //.session(sesstionSchema)
-              await session(sesstionSchema).save()
-               if(session){
-                  return {suc:"session created"}
+            let  session_data  = await session(sesstionSchema).save()
+              let user  = await db.tables[whichUserTable].findOneAndUpdate({userId: user_id},{session:session_data._id})
+           //   console.log(user)
+               if(session_data){
+                  return {suc:"Sesson created"}
                }
          } catch (error) {
            // 
@@ -96,7 +99,7 @@ export class SessionWorker {
           }else{
             let session_max_age  = 0
                 
-     let d  = '3m'//keys.SESSION_TIME
+     let d  = '1h'//keys.SESSION_TIME
      let n:RegExpMatchArray|null = d.match(/(\d+)/)
      let l:RegExpMatchArray|null = d.match(/(\D)/)
      if(n&&l){

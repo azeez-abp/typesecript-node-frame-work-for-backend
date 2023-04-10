@@ -89,7 +89,7 @@ const { Op } = require("sequelize");
       let session_max_age  = 0
      // const rsarivatekey  = fs.readFileSync( path.join(process.cwd(),'cert','passport.perm'),'utf-8' )
        
-     let d  = '3m'//keys.SESSION_TIME
+     let d  = '1h'//keys.SESSION_TIME
      let n:RegExpMatchArray|null = d.match(/(\d+)/)
      let l:RegExpMatchArray|null = d.match(/(\D)/)
      if(n&&l){
@@ -105,7 +105,7 @@ const { Op } = require("sequelize");
       session_max_age = parseInt(n[0]) * period_map[l[0]]
      }
 
-     console.log(session_max_age, "MAX AGE")
+     //console.log(session_max_age, "MAX AGE")
 
       const userObj  = {user : user.userId}
      // console.log(userObj)
@@ -139,15 +139,20 @@ const { Op } = require("sequelize");
         this.req.user_details  = {id:user._id, user_id:user.userId,session_id:accessToken}
         const session   = new SessionWorker()
    
-         let sesion = await session.createMongo(accessToken
+         let sesion:any = await session.createMongo(accessToken
           ,refreshToken,
           this.req.session.cookie,
           user.userId, 
           session_max_age,
           this.remember,
-           whichUserTable
+           whichUserTable,
+           this.req.headers['user-agent']
           )
-        
+          
+      
+
+        //console.log(this.req.headers['user-agent'], whichUserTable,session)
+
          if(sesion){
           return {accessToken,refreshToken} 
          }else{

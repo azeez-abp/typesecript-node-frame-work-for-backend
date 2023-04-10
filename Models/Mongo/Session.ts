@@ -8,6 +8,7 @@ export const sessionObject  = new mongoose.Schema( {
     cookie_id:{type:String,unique:true},
     session_id:{type:String,unique:true},
     cookie:{type:Object},
-    table:{type:String}
+    table:{type:String},
+    user_agent:{type:String}
 })
 

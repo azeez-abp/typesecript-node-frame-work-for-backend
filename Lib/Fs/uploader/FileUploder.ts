@@ -28,8 +28,14 @@ private multerSetting: MulterSetting = new MulterSetting()
     const imgErr : string[]  = [];
     const imgUrl : string[]  = []
     const valid_image_extension  = this.validExts
+
+
+     try {
+      
+     
+
       image_.forEach((img:any) =>{
-    
+        
           const dimensions = image_size(img.path)///  //out put{ height: 225, width: 225, type: 'jpg' }
          // console.log(dimensions,img.size,(img.size/(1024*1024)))
           if( (img.size/(1024*1024)) > size){
@@ -64,22 +70,40 @@ private multerSetting: MulterSetting = new MulterSetting()
       })
      
       return [imgErr,imgUrl,image_]
+
+    } catch (error:any) {
+      return  [['err'],[error]]
+    }
+
   }
 
 
 
-public  getFileAndUpload(url:string, image_input_field_name:string,isSingle:boolean=false,resize_image_:number[] = []){
+public  getFileAndUpload(url:string, image_input_field_name:string,isSingle:boolean=false,resize_image_:number[] = [],callback:Function){
     sharp.cache({ files : 0 });////prevent directory from lock
+    try {
+      
+  
 
   let $uploader  = this.multerSetting.getStoragePath(this.image_store_path).upload.single(image_input_field_name)  
   let $uploaders  =  this.multerSetting.getStoragePath(this.image_store_path).upload.array(image_input_field_name,12) 
   let whichUploader  = isSingle?$uploader:$uploaders;
  
-  this.router.post(url, whichUploader,(req:any,res:any)=>{
+  this.router.post(url, whichUploader,(req:any,res:any,next:any)=>{
       let imgDir :string[]  = []; 
        let filesArr  = isSingle?[req.file]:req.files
       let img_validation_pass  =    this.imageValidator(filesArr)
-    
+       // console.log(img_validation_pass)
+       
+      if(img_validation_pass[0][0] ==='err'){
+        return res.json( {err: `
+             This error occure for the following reason 
+             1. Did you have image field in your form with name attribute "${image_input_field_name}? 
+             2. Did you select the image?
+        
+        ` })
+      }
+     
       if(img_validation_pass[0].length > 0){
                    /**
                     * @[imgErr].lenght >0 
@@ -162,15 +186,23 @@ public  getFileAndUpload(url:string, image_input_field_name:string,isSingle:bool
      
                    imgDir.push(pathObj)
                  })/////end of forEach
-     
-               return  res.json({suc:'image upload done',img_dir:imgDir })
+                   res.uploaded_img_ = imgDir
+               return   callback(req,res)
+             //  return  res.json({suc:'image upload done',img_dir:imgDir })
     
               ///////////////////////////////////////////validation pass
         }
 
     
   })
+ 
+} catch (error:any) {
+   return {error}
+  //  console.log("ERROR",error)  
+
 }
+}
+
   
 
 }

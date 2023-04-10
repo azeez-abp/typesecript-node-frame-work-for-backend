@@ -4,9 +4,13 @@ import { UserRegister } from "../Controllers/User/Register"
 import { SessionWorker } from "../Lib/SessionWorker/Session"
 import { MongoAuth } from "../Middlewares/Auth/AuthMongo"
 import { PassportAuthWithJsonChecker } from "../Middlewares/PassportAuthWithJwtStrategyAuthChecker"
+import { FileUploader } from "../Lib/Fs/uploader/FileUploder"
 //import * as passport from 'passport'
 //import  { passportjwtMongo } from "../Middlewares/PassportJWT"
 import passport from 'passport'
+import { unlink } from "fs"
+import { Mailer } from "../Lib/Functions/Mailer"
+import { UserAccount } from "../Controllers/User/UserAccount"
 
 let UserRoute= (app:any)=>{
  
@@ -24,21 +28,51 @@ let UserRoute= (app:any)=>{
    
   })
 
-  app.post('/api/v1/user/register',async(req:any,res:any)=>{
-    try {
+  const upl  =  new FileUploader(app,'./public/images',1200000,500000,500000,['png','jpg','gif'])
+upl.getFileAndUpload('/api/v1/user/register','img',true,[200,400],async(req:any,res:any)=>{
+  
+   
+        try {
+        req.body['profile_img'] = res.uploaded_img_[0].path
+      //  console.log(res.uploaded_img_[0],req.body ,req.body.email )
       let user  = await UserRegister.done(req.body)
        if(user .err){
-       return  res.status(500).json( {err:user .err})
+        unlink(res.uploaded_img_[0].path,()=>{
+          
+        })
+       return  res.status(500).json( {err:user})
      }
-     return  res.json( {suc:user .suc})
+    //  Mailer('adioadeyoriazeez@gmail.com0',req.body.email,"Registration completed for your online banling system" ,`${req.body.email} welcome to your online banking`,(err:any,suc:any)=>{
+
+    //  })
+     return  res.json( {suc:user .suc,img: res.uploaded_img_[0].path})
  
-    } catch (error) {
+    } catch (error:any) {
     // console.log(error, 'useR reG2')
-     return res.status(501).json( {err:""})
+    unlink(res.uploaded_img_[0].path,()=>{
+
+    })
+     return res.status(501).json( {err:"Unknown error occur , contact admin"})
     }
+   // return res.json({suc:res.uploaded_img_})
+
+})
+
+//   app.post('/api/v1/user/register',async(req:any,res:any)=>{
+//     try {
+//       let user  = await UserRegister.done(req.body)
+//        if(user .err){
+//        return  res.status(500).json( {err:user .err})
+//      }
+//      return  res.json( {suc:user .suc})
+ 
+//     } catch (error) {
+//     // console.log(error, 'useR reG2')
+//      return res.status(501).json( {err:""})
+//     }
   
 
- })
+//  })
 
 
 
@@ -56,13 +90,18 @@ let UserRoute= (app:any)=>{
     //passportjwtMongo('users').authenticate('jwt', { session: false }) ,
     passport.authenticate('jwt', { session: false }) ,
   (req:any,res:any)=>{
-    console.log( req.isAuthenticated(), req.session_regenerate,"yesv2")
-   
-   return res.status(200).json({suc:req.user, regenerate_tonen:req.session_regenerate})
+    //console.log( req.isAuthenticated(), req.session_regenerate,"yesv2")
+  // console.log(res.biyawa_user)
+   return res.status(200).json({suc:req.user, regenerate_token:req.session_regenerate})
    })
 
 
-
+  app.post('/api/v1/user/generate_token',SessionWorker.checksessionMongo, passport.authenticate('jwt', { session: false }), UserAccount.generateToken )
+  
+  app.post('/api/v1/user/create_pin',SessionWorker.checksessionMongo, passport.authenticate('jwt', { session: false }), UserAccount.createPinForSendingMoney )
+   
+  app.post('/api/v1/user/send_money',SessionWorker.checksessionMongo, passport.authenticate('jwt', { session: false }), UserAccount.sendMoney )
+ 
 
   app.delete('/api/v1/user/logout', invalidateUser)
 

@@ -4,6 +4,9 @@ import { sessionObject } from '../../Models/Mongo/Session';
 import { LogEvents } from '../../Lib/Event/Event';
 import {User} from '../../Models/Mongo/Users';
 import { passwordObject } from '../../Models/Mongo/Password_reset';
+import { Token } from '../../Models/Mongo/Token';
+import { Pin } from '../../Models/Mongo/Pins';
+import { Account } from '../../Models/Mongo/Account';
 const uri: string = <string> configVar().MONGO_URI
 //console.log( configVar().MAIL_URL)
 
@@ -67,7 +70,10 @@ export const MongoDB  = async()=>{
     const tablesObj:any = { tables:  {
            users:db.model('users', User,'users' ),
            sessions:db.model('sessions',sessionObject,'sessions'),
-           password_requests:db.model('password_requests',passwordObject,'password_requests')
+           password_requests:db.model('password_requests',passwordObject,'password_requests'),
+           tokens:db.model('tokens',Token,'tokens'),
+           pins:db.model('pins',Pin,'pins'),
+           accounts:db.model('accounts',Account,'accounts'),
           
     }      
     }

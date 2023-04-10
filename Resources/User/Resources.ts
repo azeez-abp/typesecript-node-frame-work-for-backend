@@ -7,5 +7,9 @@ export const userResouece = {
     "city": "City",
     "address":"Address",
     "state":"State",
-    "role":"Role"
+    "role":"Role",
+    "accountNumber":"Account Number",
+    "phone":"Phone Numebr",
+    "profile_img":"Image",
+    "session":"user session"
    };

@@ -4,7 +4,7 @@ import { randomStr } from "../../Lib/Functions/RandonString";
 
 export class UserRegister{
 
-  static async done(data:{password:string,userId:string}):Promise<any>{
+  static async done(data:{password:string,userId:string,accountNumber:Number}):Promise<any>{
   
    //  console.log(pass,data)
 
@@ -17,6 +17,7 @@ export class UserRegister{
             let userId  = randomStr(20);
             data.password  = pass
             data.userId  = userId
+            data.accountNumber  = parseInt( randomStr(10,false,false,true))
            // data.salt = cryptEncode.salt
 
               if(Object.keys(data).length===0){
@@ -32,7 +33,7 @@ export class UserRegister{
            }
            return {err:"Registration failed, try again"}
         } catch (error) {
-           // console.log(error, 'useR reG')
+            console.log(error, 'useR reG')
             return{err:error} 
         }
       

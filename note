@@ -1,3 +1,19 @@
 git push biyawa_backend_azeez azeez_initial
 princedaniel0997@mail.com
 curl http://localhost:8001/healthab
+Route->Request->middleware & controller-> Resouces-> model
+Structure 
+Router=> Request =>Middlewate & Controller => Resources and Model;
+User => Account number 10 digif 912****235
+======================================
+| UserAccount |
+    deposit @require [card, ] @return [bool]
+    widthdraw @require [type : bill=>typeofbill dstv goTv nepa |to account]
+    showBalance
+
+=================
+
+mvxusifgbwlupnha
+
+'1234567890'.replace(/(?<=\d{3})\d{4}/g, '****')
+'123****890'

@@ -15,8 +15,8 @@ import { Session } from './Lib/Functions/Session';
 
 // import { configVar } from './Lib/Config/keys/Key';
 // import MysqlDB from './Database/Mysql/SequenlizeDB';
-// import { randomStr as random } from './Lib/Functions/RandonString';
-// import { FileUploader } from './Lib/Fs/uploader/FileUploder';
+ import { randomStr as random } from './Lib/Functions/RandonString';
+ import { FileUploader } from './Lib/Fs/uploader/FileUploder';
 // import {MongoDB as MongooseConnection } from './Database/Mongo/Mongo';
 //  import { Mailer } from './Lib/Functions/Mailer';
 //  import { SessionWorker } from './Lib/SessionWorker/Session';
@@ -26,6 +26,7 @@ import { genKeyPair } from './cypto/CryptoGen';
 //import promMetricType from './Lib/Event/PromMonitoring';
 
 async function get(){
+ console.log( random(10,false,false,true))
 
  
  //genKeyPair(path.join(__dirname,'cert','passport'))

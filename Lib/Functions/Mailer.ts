@@ -30,30 +30,31 @@ export const Mailer  = (from:string,to:string[],subject:string,messge_content:st
 //   }));
 
   let transporter = nodemailer.createTransport({
-    host: keys.h,
-    port: 465,
+  service: "gmail",
+  host: "smtp.gmail.com",
+  port: 587,
     auth: {
-            user:keys.u,
-            pass: keys.p
+            user:'adioadeyoriazeez@gmail.com',
+            pass: 'mvxusifgbwlupnha'
     },
 
     secure: true,
-    dkim: {
-        keys: [
-            {
-                domainName: 'abp.com.ng',
-                keySelector: '2017',
-                privateKey: fs.readFileSync(path.join(__dirname,'dkim.pem'),'utf-8') 
+    // dkim: {
+    //     keys: [
+    //         {
+    //             domainName: 'abp.com.ng',
+    //             keySelector: '2017',
+    //             privateKey: fs.readFileSync(path.join(__dirname,'dkim.pem'),'utf-8') 
             
-            },
-            // {
-            //     domainName: 'example.com',
-            //     keySelector: '2016',
-            //     privateKey: '-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBg...'
-            // }
-        ],
-        cacheDir: false
-    }
+    //         },
+    //         // {
+    //         //     domainName: 'example.com',
+    //         //     keySelector: '2016',
+    //         //     privateKey: '-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBg...'
+    //         // }
+    //     ],
+    //     cacheDir: false
+    // }
 });
     
 let message:object = {

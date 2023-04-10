@@ -1,0 +1,96 @@
+ ////////////////////////////////////////////////////////////////Registration end point
+ end point : /api/v1/user/register
+
+ @param: {
+  first_name: 'value',
+  last_name: 'value',
+  email: 'bvalue@gmail.com',
+  phone: '080640000000',
+  state: 'Ogun',
+  city: 'Remo',
+  address: '119, Alte Avenu KutaKute way road Ojugboro Estate',
+  gender: 'Male',
+  password: '123456',
+  img: img_buffer
+}
+
+@return {suc} | {err}
+
+////////////////////////////////////////////////////////////////////////Registration end point
+
+////////////////////////////////////////////////////////////////////Login end point
+EndPoint   = /api/v1/user/login
+@param {
+"email":"adioadeyoriazeez@gmail.com",
+"password":"1234567",
+"remember":1
+}
+@return {suc,data:{accessToken}} | {err}
+
+////////////////////////////////////////////////////////////////////Login end point
+
+ ////////////////////////////////////////////////////////////////////Logout end point
+EndPoint   = /api/v1/user/logout
+@param header bearer token
+@return {suc} | {err}
+////////////////////////////////////////////////////////////////////Logout end point
+
+////////////////////////////////////////////////////////////////////request_password_reset end point
+End point  /api/v1/user/request_password_reset
+
+@param  = {
+  "email":"adioadeyoriazeez@gmail.com",
+  "url":"http://localhost" ==>frontend url where they will be redirect to from their inbox
+}
+@return {suc} | {err}
+
+////////////////////////////////////////////////////////////////////request_password_reset end point
+
+
+////////////////////////////////////////////////////////////////////password_reset end point
+End point => /api/v1/user/password_reset
+@params   = {
+  "email":"adioadeyoriazeez@gmail.com",
+ "password":"1234567",
+ "repeat_password":"1234567",
+ "token":"rM7Db7vRHzdOySGNkyPg1YJJZZbtatzSU2k7vJbtQVWuZZzgPXEJLxxarLNEPa"
+   
+ }
+ @return {suc} | {err}
+ ////////////////////////////////////////////////////////////////////password_reset end point
+
+  ////////////////////////////////////////////////////////////////////Profile end point
+EndPoint   = /api/v1/user/profile
+@param header bearer token
+@return {suc,regenerate_token} | {err}
+////////////////////////////////////////////////////////////////////Profile end point
+
+  ////////////////////////////////////////////////////////////////////Profile end point
+EndPoint   = /api/v1/user/generate_token
+@param header bearer token
+@return {suc,regenerate_token} | {err}
+////////////////////////////////////////////////////////////////////Profile end point
+
+////////////////////////////////////////////////////////////////////Create end point
+EndPoint   = /api/v1/user/create_pin
+@param header bearer token &{
+  "pin":"3456",
+  "verifyToken":"rkSOr2ACoN7dvVwRWm9narbnyifS4PfwIzcORXbyh9e1fTs6TV5bZtkg4bdSTXUbgR5Bo"
+}
+@return {suc,regenerate_token} | {err}
+////////////////////////////////////////////////////////////////////Create end point
+
+
+////////////////////////////////////////////////////////////////////send money end point
+EndPoint   = /api/v1/user/send_money
+@param header bearer token &{
+  "pin":"3456",
+  "verifyToken":"rkSOr2ACoN7dvVwRWm9narbnyifS4PfwIzcORXbyh9e1fTs6TV5bZtkg4bdSTXUbgR5Bo"
+}
+@return {suc,regenerate_token} | {err}
+////////////////////////////////////////////////////////////////////send money end point
+
+
+
+
+ 

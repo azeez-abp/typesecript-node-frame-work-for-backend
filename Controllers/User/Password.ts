@@ -96,7 +96,8 @@ export class PassWord{
         // user_table.password  = hashPassword
           let user  = await  user_table.findOne({email}).select('password')
           user.password  = hashPassword
-          console.log(user ,hashPassword)
+          user.passwordReset = has_request._id
+        //  console.log(user ,hashPassword)
           if(user.save()){
             return res.status(200).json({suc:"Password reset done"})
           }  
