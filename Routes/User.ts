@@ -40,7 +40,7 @@ upl.getFileAndUpload('/api/v1/user/register','img',true,[200,400],async(req:any,
         unlink(res.uploaded_img_[0].path,()=>{
           
         })
-       return  res.status(500).json( {err:user})
+       return  res.status(400).json( {err:user})
      }
     //  Mailer('adioadeyoriazeez@gmail.com0',req.body.email,"Registration completed for your online banling system" ,`${req.body.email} welcome to your online banking`,(err:any,suc:any)=>{
 
@@ -52,7 +52,8 @@ upl.getFileAndUpload('/api/v1/user/register','img',true,[200,400],async(req:any,
     unlink(res.uploaded_img_[0].path,()=>{
 
     })
-     return res.status(501).json( {err:"Unknown error occur , contact admin"})
+     console.log(error,error.code)
+     return res.status(400).json( {err:"Unknown error occur , contact admin"})
     }
    // return res.json({suc:res.uploaded_img_})
 

@@ -32,9 +32,13 @@ export class UserRegister{
                return {suc:`${user.first_name}, your registration is completed`}
            }
            return {err:"Registration failed, try again"}
-        } catch (error) {
+        } catch (error:any) {
             console.log(error, 'useR reG')
-            return{err:error} 
+             let errType:string  = ''
+            if(error.code === 11000){
+              errType = `${error.keyValue.email} already exist`
+            }
+            return{err:error,type:errType} 
         }
       
 

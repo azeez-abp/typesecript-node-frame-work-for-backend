@@ -8,20 +8,29 @@ import { Token } from '../../Models/Mongo/Token';
 import { Pin } from '../../Models/Mongo/Pins';
 import { Account } from '../../Models/Mongo/Account';
 const uri: string = <string> configVar().MONGO_URI
-//console.log( configVar().MAIL_URL)
+console.log( configVar())
 
  class MongooseConnection {
+
   private static instance: MongooseConnection;
   private connection: Connection = mongoose.connection;
-  private constructor() {
-
+ private constructor() {
+    // MongooseConnection.instance = new MongooseConnection();
+    this.connect().then(d=>{
+        
+      }).catch(er=>{
+        console.log(er ,"MONGO ERRR")
+      });
+    
   }
   public static async getInstance(): Promise<MongooseConnection> {
    try {
       if (!MongooseConnection.instance) {
-  
+         console.log("NEW CONNECTION")
       MongooseConnection.instance = new MongooseConnection();
       await MongooseConnection.instance.connect();
+    }else{      console.log("PREVIOUS CONNECTION")
+
     }
   
    } catch (error:any) {
@@ -31,7 +40,7 @@ const uri: string = <string> configVar().MONGO_URI
    return MongooseConnection.instance;
   }
 
-  private async connect(): Promise<void> {
+  private async connect() {
     const options= {
       useNewUrlParser: true,
       useUnifiedTopology: true,
@@ -41,6 +50,7 @@ const uri: string = <string> configVar().MONGO_URI
     mongoose.set('debug', false);
     mongoose.set('strictQuery', true)
     this.connection = await mongoose.createConnection(uri,options);
+    return this
   }
 
   public getConnection(): Connection {
