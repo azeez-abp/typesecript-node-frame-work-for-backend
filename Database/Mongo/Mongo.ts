@@ -8,87 +8,86 @@ import { Token } from '../../Models/Mongo/Token';
 import { Pin } from '../../Models/Mongo/Pins';
 import { Account } from '../../Models/Mongo/Account';
 const uri: string = <string> configVar().MONGO_URI
-console.log( configVar())
+//console.log( configVar())
 
  class MongooseConnection {
 
   private static instance: MongooseConnection;
   private connection: Connection = mongoose.connection;
  private constructor() {
-    // MongooseConnection.instance = new MongooseConnection();
-    this.connect().then(d=>{
-        
-      }).catch(er=>{
-        console.log(er ,"MONGO ERRR")
-      });
+  const options= {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
     
+  
+  } as ConnectOptions ;
+  mongoose.set('debug', false);
+  mongoose.set('strictQuery', true)
+  mongoose.connect(uri,options)
+  .then(() => true);
+  
   }
-  public static async getInstance(): Promise<MongooseConnection> {
-   try {
+  public static  getInstance(): MongooseConnection {
       if (!MongooseConnection.instance) {
-         console.log("NEW CONNECTION")
-      MongooseConnection.instance = new MongooseConnection();
-      await MongooseConnection.instance.connect();
-    }else{      console.log("PREVIOUS CONNECTION")
-
+        MongooseConnection.instance =   new MongooseConnection();
     }
-  
-   } catch (error:any) {
-    console.log(error.message,"BIG ERROR CONNECTION")
-   }
-  
    return MongooseConnection.instance;
   }
 
-  private async connect() {
-    const options= {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-      
-    
-    } as ConnectOptions ;
-    mongoose.set('debug', false);
-    mongoose.set('strictQuery', true)
-    this.connection = await mongoose.createConnection(uri,options);
-    return this
-  }
+
 
   public getConnection(): Connection {
     return this.connection;
   }
 
-//   public static async table() {
-//   const connection = await MongooseConnection.getInstance();
-//   const db = connection.getConnection();
-//   const Schema  = mongoose.Schema;
-//   const tablesObj:any = {
-//       users: db.model('user',new Schema(studentObject),'user'),
-//       session:db.model('session',new Schema(sessionObject),'session'),
-// } 
-
-// return tablesObj
-//   }
-
 
 }
 
 
+
+
+
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
 export const MongoDB  = async()=>{
-    
-    const connection = await MongooseConnection.getInstance();
-    const db = await connection.getConnection();
-    const tablesObj:any = { tables:  {
-           users:db.model('users', User,'users' ),
-           sessions:db.model('sessions',sessionObject,'sessions'),
-           password_requests:db.model('password_requests',passwordObject,'password_requests'),
-           tokens:db.model('tokens',Token,'tokens'),
-           pins:db.model('pins',Pin,'pins'),
-           accounts:db.model('accounts',Account,'accounts'),
-          
-    }      
+
+
+    try {
+     const connection = await MongooseConnection.getInstance();
+     const db =   connection.getConnection();
+      // const DB   = new Connection_()
+      // const db  = mongoose;
+      const tablesObj:any = { tables:  {
+             users:db.model('users', User,'users' ),
+             sessions:db.model('sessions',sessionObject,'sessions'),
+             password_requests:db.model('password_requests',passwordObject,'password_requests'),
+             tokens:db.model('tokens',Token,'tokens'),
+             pins:db.model('pins',Pin,'pins'),
+             accounts:db.model('accounts',Account,'accounts'),
+            
+      }  
+  
+      }
+      mongoose.disconnect()
+      return tablesObj
+    } catch (error) {
+      console.log(error, "")
     }
 
-    return tablesObj
+
+
+
+    
 } 
 
 /*

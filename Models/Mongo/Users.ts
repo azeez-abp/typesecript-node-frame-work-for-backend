@@ -83,7 +83,8 @@ new Schema(
     },
 
     'session':{type:Schema.Types.ObjectId,'ref':'sessions'},
-   'passwordReset':{type:Schema.Types.ObjectId,'ref':'password_requests'}
+    'passwordReset':{type:Schema.Types.ObjectId,'ref':'password_requests'},
+    'transactions': [{type:Schema.Types.ObjectId,'ref':'transactions'}], //one user to many transaction
 }
 , { 'timestamps': true });
 
