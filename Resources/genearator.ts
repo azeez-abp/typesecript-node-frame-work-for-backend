@@ -1,6 +1,6 @@
 
 /**
- * ALthogh this function ise generator, we havn't know the limit it can reach, 
+ * ALthogh this function is  generator, we havn't know the limit it can reach, 
  * but acccording to genearator theory, this loop never stop;
  * @param json of the database onject. this objects is register in Resource folder and imported to the file
  * where this class is call

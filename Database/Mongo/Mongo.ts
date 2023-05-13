@@ -15,18 +15,22 @@ const uri: string = <string> configVar().MONGO_URI
   private static instance: MongooseConnection;
   private connection: Connection = mongoose.connection;
  private constructor() {
-  const options= {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    
-  
-  } as ConnectOptions ;
-  mongoose.set('debug', false);
-  mongoose.set('strictQuery', true)
-  mongoose.connect(uri,options)
-  .then(() => true);
+     this.connectDriver()
   
   }
+   
+  private async connectDriver(){
+    const options= {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      
+    
+    } as ConnectOptions ;
+    mongoose.set('debug', false);
+    mongoose.set('strictQuery', true)
+    return await  mongoose.connect(uri,options)
+  }
+
   public static  getInstance(): MongooseConnection {
       if (!MongooseConnection.instance) {
         MongooseConnection.instance =   new MongooseConnection();
