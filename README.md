@@ -1,15 +1,10 @@
 | APPROXIMATEDISTINCTCOUNT | Returns An estimated Count of unique values in  Column. |
-| ------------------------ | --------------------------------------------------------| 
+| ------------------------ | -------------------------------------------------------| 
 | AVERAGE | Returns the | Average (Arithmetic  Mean) of All the numbers in  Column. |
-| ------------------------ | --------------------------------------------------------| 
 | AVERAGEA | Returns the | Average (Arithmetic  Mean) of the values in  Column. |
-| ------------------------ | --------------------------------------------------------| 
 | AVERAGEX  |  Calculates the Average ( Arithmetic  Mean) of  Set of expressions evaluated over table. |
-| ------------------------ | --------------------------------------------------------| 
 | COUNT  |  Counts the number of rows in the  Specified Column that  Contain non-blank values. |
-| ------------------------ | --------------------------------------------------------| 
 | COUNTA  |  Counts the number of rows in the  Specified Column that  Contain non-blank values. |
-| ------------------------ | --------------------------------------------------------| 
 | COUNTAX  |  Counts non-blank results when evaluating the result of  An expression over | A table. |
 | COUNTBLANK  |  Counts the number of blank  Cells in  Column. |
 | COUNTROWS  |  Counts the number of rows in the | Specified table, or in | A table | Defined by | An expression. |
