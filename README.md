@@ -1,3 +1,4 @@
+# DAX FUNTION
 APPROXIMATEDISTINCTCOUNT	 |	Returns an estimated count of unique values in a column.
 AVERAGE	 |	Returns the average (arithmetic mean) of all the numbers in a column.
 AVERAGEA	 |	Returns the average (arithmetic mean) of the values in a column.
