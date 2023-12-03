@@ -2,8 +2,8 @@
 | DAX FUNCTIOON | DESCRIPTION. |
 | ------------------------ | -------------------------------------------------------| 
 | APPROXIMATEDISTINCTCOUNT | Returns An estimated Count of unique values in  Column. |
-| AVERAGE | Returns the | Average (Arithmetic  Mean) of All the numbers in  Column. |
-| AVERAGEA | Returns the | Average (Arithmetic  Mean) of the values in  Column. |
+| AVERAGE | Returns the  Average (Arithmetic  Mean) of All the numbers in  Column. |
+| AVERAGEA |Returns the average (arithmetic mean) of the values in a column. |
 | AVERAGEX  |  Calculates the Average ( Arithmetic  Mean) of  Set of expressions evaluated over table. |
 | COUNT  |  Counts the number of rows in the  Specified Column that  Contain non-blank values. |
 | COUNTA  |  Counts the number of rows in the  Specified Column that  Contain non-blank values. |
