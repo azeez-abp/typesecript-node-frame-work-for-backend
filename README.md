@@ -1,4 +1,4 @@
-| APPROXIMATEDISTINCTCOUNT | Returns | An estimated | Count of unique values in  Column. |
+| APPROXIMATEDISTINCTCOUNT | Returns  An estimated  Count of unique values in  Column. |
 | AVERAGE | Returns the | Average (Arithmetic  Mean) of All the numbers in  Column. |
 | AVERAGEA | Returns the | Average (Arithmetic  Mean) of the values in  Column. |
 | AVERAGEX  |  Calculates the Average ( Arithmetic  Mean) of  Set of expressions evaluated over table. |
